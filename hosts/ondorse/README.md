@@ -76,7 +76,28 @@ nix shell nixpkgs#hello -c hello   # flakes + pinned registry + caches work
 Finally, reboot once and re-run `nix store info` to confirm the /nix volume
 mounts and the daemon starts on its own.
 
-## 5. Day-to-day
+## 5. GUI apps (manual installs)
+
+These are installed outside Nix (no homebrew on these machines — direct
+downloads, same as on mbp2023):
+
+- **Rectangle** (window manager) — <https://rectangleapp.com>
+- **Stats** (menu bar system monitor) — <https://github.com/exelban/stats/releases>
+- **Ghostty** (terminal) — <https://ghostty.org/download>
+  (its config is already managed by the flake via `modules/home/ghostty`,
+  so it picks up `~/.config/ghostty/config` on first launch)
+- **Flycut** (clipboard manager) — Mac App Store, or
+  <https://github.com/TermiT/Flycut/releases>
+
+Post-install:
+
+- Grant Rectangle and Flycut their Accessibility permissions when prompted
+  (System Settings → Privacy & Security → Accessibility).
+- Set the Flycut paste shortcut to **⌘⇧V**: Flycut menu bar icon →
+  Preferences → Hotkeys → Main hotkey.
+- Enable "Launch at login" in each app's preferences.
+
+## 6. Day-to-day
 
 From here on the machine is fully declarative:
 
