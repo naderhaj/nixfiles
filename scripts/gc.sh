@@ -1,31 +1,39 @@
 #!/bin/sh
 set -e
 
-# Capture available bytes before
-before_avail=$(df -k / | tail -1 | awk '{print $4}')
+# Capture available bytes before (APFS volumes share container free space)
+before_avail=$(df -k /nix | tail -1 | awk '{print $4}')
 
 echo "╔══════════════════════════════════════╗"
 echo "║         Nix Garbage Collection       ║"
 echo "╚══════════════════════════════════════╝"
 echo ""
 echo "▶ Before"
-df -h / | tail -1
+df -h /nix | tail -1
 echo ""
 
-echo "▶ Deleting old generations..."
-sudo nix-env --delete-generations old --profile /nix/var/nix/profiles/system
-nix-env --delete-generations old --profile ~/.local/state/nix/profiles/home-manager
+echo "▶ Deleting old user profile generations..."
+for profile in "$HOME"/.local/state/nix/profiles/*; do
+  # skip numbered generation links; only touch the profile symlinks themselves
+  case "$profile" in *-link) continue ;; esac
+  [ -L "$profile" ] || continue
+  nix profile wipe-history --profile "$profile"
+done
 echo ""
 
-echo "▶ Running garbage collection..."
-nix-store --gc
+echo "▶ Deleting old system generations + garbage collection..."
+sudo nix-collect-garbage --delete-old
+echo ""
+
+echo "▶ Optimising store (deduplicating identical files)..."
+sudo nix store optimise
 echo ""
 
 # Capture available bytes after
-after_avail=$(df -k / | tail -1 | awk '{print $4}')
+after_avail=$(df -k /nix | tail -1 | awk '{print $4}')
 
 echo "▶ After"
-df -h / | tail -1
+df -h /nix | tail -1
 echo ""
 
 # Compute saved (in KB, then convert)
