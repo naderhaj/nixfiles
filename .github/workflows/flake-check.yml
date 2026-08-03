@@ -15,9 +15,15 @@ jobs:
           - name: "NixOS - zeus"
             system: "x86_64-linux"
             config: "zeus"
+            platform: "nixos"
           - name: "Darwin - mbp2023"
             system: "aarch64-darwin"
             config: "mbp2023"
+            platform: "darwin"
+          - name: "Darwin - ondorse"
+            system: "aarch64-darwin"
+            config: "ondorse"
+            platform: "darwin"
 
     steps:
       - name: Checkout
@@ -33,21 +39,21 @@ jobs:
         run: nix flake show
 
       - name: Test configuration evaluation
-        if: matrix.config != 'mbp2023'
+        if: matrix.platform == 'nixos'
         run: |
           nix eval .#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel \
             --system ${{ matrix.system }} \
             --json
 
       - name: Test darwin configuration evaluation
-        if: matrix.config == 'mbp2023'
+        if: matrix.platform == 'darwin'
         run: |
           nix eval .#darwinConfigurations.${{ matrix.config }}.system \
             --system ${{ matrix.system }} \
             --json
 
       - name: Build NixOS configuration (dry run)
-        if: matrix.config != 'mbp2023'
+        if: matrix.platform == 'nixos'
         run: |
           nix build .#nixosConfigurations.${{ matrix.config }}.config.system.build.toplevel \
             --system ${{ matrix.system }} \
@@ -55,7 +61,7 @@ jobs:
             --dry-run
 
       - name: Build darwin configuration (dry run)
-        if: matrix.config == 'mbp2023'
+        if: matrix.platform == 'darwin'
         run: |
           nix build .#darwinConfigurations.${{ matrix.config }}.system \
             --system ${{ matrix.system }} \

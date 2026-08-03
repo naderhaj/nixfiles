@@ -1,4 +1,4 @@
-.PHONY: mbp-switch mbp-build zeus-switch zeus-build check update gc generations
+.PHONY: mbp-switch mbp-build ondorse-switch ondorse-build zeus-switch zeus-build check update gc generations
 
 # Build and switch macOS (Darwin) configuration
 mbp-switch:
@@ -7,6 +7,14 @@ mbp-switch:
 # Dry-run macOS build without switching
 mbp-build:
 	darwin-rebuild build --flake .#mbp2023 --dry-run
+
+# Build and switch work macOS (ondorse)
+ondorse-switch:
+	./scripts/darwin.sh ondorse
+
+# Dry-run work macOS build without switching
+ondorse-build:
+	darwin-rebuild build --flake .#ondorse --dry-run
 
 # Build and switch zeus (NixOS)
 zeus-switch:

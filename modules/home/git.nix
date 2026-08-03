@@ -22,7 +22,7 @@
       alias = { };
       pull.rebase = true;
       init.defaultBranch = "main";
-      github.user = "hajlaoui-nader";
+      github.user = "naderhaj";
 
       push.autoSetupRemote = true;
       push.followTags = true; # push tags when pushing branches
