@@ -10,21 +10,26 @@
   nixpkgs.config.allowBroken = true;
 
 
-  # Nix is managed by Determinate Systems — settings below are passed via nix-darwin
-  nix.enable = false;
+  # Nix daemon, nix.conf and registry are managed by nix-darwin (vanilla Nix)
+  nix.enable = true;
   nix.settings = {
+    experimental-features = [ "nix-command" "flakes" ];
     trusted-users = [ "naderh" ];
-    substituters = [ "https://cache.garnix.io" ];
-    trusted-public-keys = [ "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g=" ];
+    substituters = [ "https://cache.nixos.org" "https://cache.garnix.io" ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "cache.garnix.io:CTFPyKSLcx5RMJKfLo5EEPUObbA78b0YQ2DTCJXqr9g="
+    ];
   };
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
 
   # Perform garbage collection weekly to maintain low disk usage
-  # nix.gc = {
-  #   automatic = true;
-  #   interval = { Weekday = 0; Hour = 0; Minute = 0; };
-  #   options = "--delete-older-than 1w";
-  # };
+  nix.gc = {
+    automatic = true;
+    interval = { Weekday = 0; Hour = 0; Minute = 0; };
+    options = "--delete-older-than 1w";
+  };
+  nix.optimise.automatic = true;
 
   programs = {
     zsh.enable = true;

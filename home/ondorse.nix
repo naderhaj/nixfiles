@@ -18,7 +18,7 @@
   programs.htop.enable = true;
 
   # Pin nix registry so `nix search` / `nix shell` use our locked nixpkgs
-  # (needed because Determinate Nix disables nix-darwin's nix.registry management)
+  # (also pinned system-wide via nix-darwin; kept here as belt-and-suspenders)
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
 
   programs.git.settings.user.email = "naderh@ondorse.co";
