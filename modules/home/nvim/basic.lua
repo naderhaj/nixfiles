@@ -17,6 +17,7 @@ o.relativenumber = true
 o.updatetime = 300
 o.mouse = "v"
 o.swapfile = false
+o.scrollback = 100000
 o.termguicolors = true
 o.shiftwidth = 2
 o.tabstop = 2
