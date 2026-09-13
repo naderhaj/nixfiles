@@ -62,7 +62,7 @@ echo ""
 echo '  overlays.direnv-fix = import ./overlays/direnv-overlay.nix;'
 echo ""
 echo "Then another flake could use it:"
-echo '  inputs.nixfiles.url = "github:hajlaoui-nader/nixfiles";'
+echo '  inputs.nixfiles.url = "github:naderhaj/nixfiles";'
 echo '  # and in their nixpkgs.overlays: [ inputs.nixfiles.overlays.direnv-fix ]'
 echo ""
 

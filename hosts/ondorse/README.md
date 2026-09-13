@@ -31,7 +31,7 @@ Open a **new terminal** afterwards so the Nix shell hook is loaded.
 
 ```bash
 mkdir -p ~/projects && cd ~/projects
-git clone git@github.com:hajlaoui-nader/nixfiles.git
+git clone git@github.com:naderhaj/nixfiles.git
 cd nixfiles
 ```
 
