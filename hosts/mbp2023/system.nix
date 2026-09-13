@@ -3,6 +3,7 @@
   imports = [
     ../../modules/system/common-packages.nix
     ../../modules/system/nixpkgs-overlays.nix
+    ../../modules/system/fonts.nix
   ];
 
   # Allow unfree packages
@@ -67,16 +68,6 @@
   system.defaults.dock.wvous-bl-corner = 1;
   system.defaults.dock.wvous-tr-corner = 1;
   system.defaults.dock.wvous-br-corner = 1;
-
-  fonts = {
-    packages = [
-      pkgs.inter
-      pkgs.nerd-fonts.fira-code
-      pkgs.nerd-fonts.fira-mono
-      pkgs.nerd-fonts.jetbrains-mono
-      pkgs.nerd-fonts.iosevka
-    ];
-  };
 
   security.pam.services.sudo_local.touchIdAuth = true;
 

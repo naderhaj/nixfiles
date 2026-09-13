@@ -6,6 +6,7 @@
       ../../modules/system/common-packages.nix
       ../../modules/system/common-linux-packages.nix
       ../../modules/system/nixpkgs-overlays.nix
+      ../../modules/system/fonts.nix
     ];
 
   # Bootloader.
@@ -132,16 +133,6 @@
       options = "--delete-older-than 7d";
     };
 
-  };
-
-  fonts = {
-    packages = [
-      pkgs.inter
-      pkgs.nerd-fonts.fira-code
-      pkgs.nerd-fonts.fira-mono
-      pkgs.nerd-fonts.jetbrains-mono
-      pkgs.nerd-fonts.iosevka
-    ];
   };
 
   # Enable the X11 windowing system.
