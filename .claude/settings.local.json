@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(readlink:*)"
+      "Bash(readlink:*)",
+      "Read(//nix/store/3maba10rf17pnfwabarrsk98dig88j4k-source/modules/programs/firefox/**)"
     ],
     "deny": [],
     "ask": []

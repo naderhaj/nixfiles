@@ -88,6 +88,9 @@ downloads, same as on mbp2023):
   so it picks up `~/.config/ghostty/config` on first launch)
 - **Flycut** (clipboard manager) — Mac App Store, or
   <https://github.com/TermiT/Flycut/releases>
+- **Firefox** — <https://www.mozilla.org/firefox/mac/>
+  (nixpkgs has no Firefox build for darwin, so only the app is manual — the
+  profile and its add-ons come from `modules/home/firefox.nix`)
 
 Post-install:
 
@@ -97,7 +100,51 @@ Post-install:
   Preferences → Hotkeys → Main hotkey.
 - Enable "Launch at login" in each app's preferences.
 
-## 6. Day-to-day
+### Firefox
+
+Switch first (step 3), *then* launch Firefox. home-manager writes the
+`default` profile and drops the add-on `.xpi`s into it, so a first launch
+after the switch picks them up rather than creating its own profile.
+
+Add-ons are declared in `modules/home/firefox.nix` — uBlock Origin,
+Bitwarden, Privacy Badger, DuckDuckGo, plus the French dictionary and
+language pack. `extensions.autoDisableScopes = 0` in that module means they
+arrive already enabled; nothing to click through.
+
+Then sign in to Firefox Sync to pull over bookmarks, history and the
+Bitwarden vault — that part can't be declared, since the encryption key is
+derived from the account password. If Sync also syncs add-ons it will try to
+reinstall ones that aren't in the flake; uncheck **Add-ons** in Sync settings
+to keep `modules/home/firefox.nix` the single source of truth.
+
+To bump add-on versions later:
+
+```bash
+nix flake update firefox-addons   # follows nixpkgs-unstable
+```
+
+## 6. Keyboard: swap Fn and left Control
+
+Done by hand, to match mbp2023:
+
+**System Settings → Keyboard → Keyboard Shortcuts… → Modifier Keys**, then
+set **Control (^)** to `Fn/Globe` and **Fn/Globe** to `Control (^)`.
+
+This one deliberately stays out of the flake. nix-darwin's
+`system.keyboard.swapLeftCtrlAndFn` applies the swap with
+`hidutil property --set` from the activation script, and hidutil mappings are
+runtime-only — they are lost on reboot and would only come back on the next
+`darwin-rebuild switch`. The System Settings route writes
+`com.apple.keyboard.modifiermapping.*` into
+`~/Library/Preferences/ByHost/.GlobalPreferences.<UUID>.plist`, which macOS
+reapplies at every login. There is no nix-darwin option that writes that key
+(`system.defaults.CustomUserPreferences` cannot target `-currentHost`).
+
+Note macOS writes entries for *both* Control keys even though the UI shows a
+single "Control" dropdown. Harmless — the built-in keyboard has no right
+Control key.
+
+## 7. Day-to-day
 
 From here on the machine is fully declarative:
 

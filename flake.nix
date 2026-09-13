@@ -2,12 +2,12 @@
   description = "home-manager configuration for linux, mac and raspberry pi";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05"; # pinned 2026-05-30
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-26.05"; # last bumped 2026-09-11
 
     # Unstable channel, exposed in the package set as `pkgs.unstable.<name>`.
     # Use for packages where you want a newer version than what's in the
     # stable nixpkgs pin. Update with: nix flake update nixpkgs-unstable
-    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable"; # last bumped 2026-09-11
 
     home-manager = {
       url = "github:nix-community/home-manager/master";
@@ -17,6 +17,14 @@
     darwin = {
       url = "github:lnl7/nix-darwin/master";
       inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    # Firefox add-ons packaged as .xpi derivations. Follows nixpkgs-unstable so
+    # add-on versions can be bumped independently of the stable pin with:
+    #   nix flake update firefox-addons
+    firefox-addons = {
+      url = "gitlab:rycee/nur-expressions?dir=pkgs/firefox-addons";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
   };

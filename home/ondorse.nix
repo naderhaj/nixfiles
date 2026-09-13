@@ -9,6 +9,7 @@
     ../modules/home/git.nix
     ../modules/home/tmux
     ../modules/home/ghostty
+    ../modules/home/firefox.nix
 
   ];
 
