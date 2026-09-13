@@ -1,5 +1,53 @@
 local paths = require("nix-paths")
 
+-- Telescope runs fd/rg with --no-ignore so untracked and hidden files show up,
+-- but that also turns off .gitignore handling entirely. Anything we still never
+-- want in results has to be listed here. Single source of truth for the
+-- find_files, live_grep and live_multigrep pickers below.
+local junk = {
+  ".git",
+  ".DS_Store",
+  ".direnv",
+  ".cache",
+  "result",          -- nix build symlink
+  "node_modules",
+  ".next",
+  "dist",
+  "build",
+  "target",          -- rust / scala
+  ".bloop",          -- scala / metals
+  ".metals",
+  ".gradle",
+  "__pycache__",
+  ".venv",
+  ".mypy_cache",
+  ".pytest_cache",
+  ".ruff_cache",
+  ".terraform",
+  "vendor",
+}
+
+-- fd spells exclusions `--exclude <pat>`, ripgrep spells them `--glob !<pat>`.
+-- Both use gitignore matching, so a bare name matches at any depth and takes
+-- the directory's contents with it.
+local function fd_excludes()
+  local out = {}
+  for _, pattern in ipairs(junk) do
+    table.insert(out, "--exclude")
+    table.insert(out, pattern)
+  end
+  return out
+end
+
+local function rg_excludes()
+  local out = {}
+  for _, pattern in ipairs(junk) do
+    table.insert(out, "--glob")
+    table.insert(out, "!" .. pattern)
+  end
+  return out
+end
+
 vim.api.nvim_set_keymap('n', '<leader>ff', "<cmd> Telescope find_files<CR>", {
     noremap = true,
     silent = true
@@ -95,7 +143,9 @@ vim.api.nvim_set_keymap('n', '<leader>fld', "<cmd> Telescope diagnostics<CR>", {
 });
 require("telescope").setup {
     defaults = {
-      vimgrep_arguments = {
+      -- --hidden/--no-ignore match the find_files picker below, so grep sees
+      -- the same set of files the file picker shows.
+      vimgrep_arguments = vim.list_extend({
         paths.ripgrep,
         "--color=never",
         "--no-heading",
@@ -103,12 +153,21 @@ require("telescope").setup {
         "--line-number",
         "--column",
         "--smart-case",
-        "--fixed-strings"
-      },
+        "--fixed-strings",
+        "--hidden",
+        "--no-ignore",
+      }, rg_excludes()),
     },
     pickers = {
-      find_command = {
-        paths.fd,
+      find_files = {
+        -- fd skips dotfiles and anything matched by .gitignore by default,
+        -- which hid every dotfile. Show those, minus the junk list at the top.
+        find_command = vim.list_extend({
+          paths.fd,
+          "--type", "f",
+          "--hidden",
+          "--no-ignore",
+        }, fd_excludes()),
       },
     },
     extensions = {
@@ -162,11 +221,17 @@ local live_multigrep = function(opts)
         table.insert(args, pieces[2])
       end
 
-      ---@diagnostic disable-next-line: deprecated
-      return vim.tbl_flatten({
-        args,
-        { "--color=never", "--no-heading", "--with-filename", "--line-number", "--column", "--smart-case" },
-      })
+      return vim
+        .iter({
+          args,
+          {
+            "--color=never", "--no-heading", "--with-filename", "--line-number", "--column",
+            "--smart-case", "--hidden", "--no-ignore",
+          },
+          rg_excludes(),
+        })
+        :flatten()
+        :totable()
     end,
     entry_maker = make_entry.gen_from_vimgrep(opts),
     cwd = opts.cwd,
