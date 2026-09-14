@@ -54,7 +54,7 @@
     "com.apple.mouse.tapBehavior" = 1; # trackpad tap to click
   };
 
-  system.defaults.dock.autohide = true;
+  system.defaults.dock.autohide = false;
   system.keyboard.enableKeyMapping = true;
 
   # finder
