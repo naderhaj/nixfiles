@@ -30,6 +30,8 @@
     # https://github.com/NixOS/nixpkgs/blob/master/pkgs/data/fonts/nerdfonts/default.nix
     # nerdfonts
     #bitwarden-cli # it causes an error
+    mise
+    uv
   ];
 
   home.sessionVariables = {
