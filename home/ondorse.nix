@@ -32,6 +32,8 @@
     #bitwarden-cli # it causes an error
     mise
     uv
+    awscli
+    wireguard-tools
   ];
 
   home.sessionVariables = {
