@@ -22,7 +22,7 @@
   # (also pinned system-wide via nix-darwin; kept here as belt-and-suspenders)
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
 
-  programs.git.settings.user.email = "naderh@ondorse.co";
+  programs.git.settings.user.email = "hajlaoui.nader@gmail.com";
 
   home.stateVersion = "24.11";
 

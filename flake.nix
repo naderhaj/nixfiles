@@ -76,6 +76,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
+	      home-manager.backupFileExtension = "hm_backup";
               home-manager.users.naderh = import ./home/ondorse.nix;
               home-manager.extraSpecialArgs = {
                 inherit inputs;

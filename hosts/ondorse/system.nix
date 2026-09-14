@@ -71,5 +71,6 @@
 
   security.pam.services.sudo_local.touchIdAuth = true;
 
+  ids.gids.nixbld = 350;
   system.stateVersion = 4;
 }

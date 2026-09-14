@@ -199,8 +199,7 @@ instead, e.g. `nix eval .#darwinConfigurations.mbp2023.config.fonts.packages`.
 Git email is set directly per-machine in each `home/<hostname>.nix` via
 `programs.git.settings.user.email` (there is no `gitEmail` specialArg):
 
-- `mbp2023` and `zeus`: hajlaoui.nader@gmail.com
-- `ondorse`: naderh@ondorse.co
+- `mbp2023`, `zeus`, and `ondorse`: hajlaoui.nader@gmail.com
 
 ### Platform-Specific Notes
 - **macOS**: Includes system defaults, fonts, and TouchID authentication

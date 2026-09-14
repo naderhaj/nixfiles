@@ -111,6 +111,18 @@ Bitwarden, Privacy Badger, DuckDuckGo, plus the French dictionary and
 language pack. `extensions.autoDisableScopes = 0` in that module means they
 arrive already enabled; nothing to click through.
 
+They won't show up anywhere in the toolbar or the puzzle-piece Extensions
+panel, though — `browser.uiCustomization.state`'s `unified-extensions-area`
+stays empty, because home-manager side-loads the `.xpi`s into the profile
+before Firefox's first launch, so the normal "auto-add this new extension's
+icon" logic (which only fires on an interactive install) never runs. The
+extensions themselves are fully enabled and working
+(`extensions.json` shows `active: true`, `signedState: 2`); there's just no
+icon placed anywhere. Fix: right-click empty toolbar space (or the "…"
+overflow) → **Customize Toolbar…**, then drag each extension from the
+palette into the toolbar or the Extensions area and click **Done**. One-time
+step per profile.
+
 Then sign in to Firefox Sync to pull over bookmarks, history and the
 Bitwarden vault — that part can't be declared, since the encryption key is
 derived from the account password. If Sync also syncs add-ons it will try to
