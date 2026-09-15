@@ -6,6 +6,11 @@
     nix-direnv.enable = true;
   };
 
+  # Multi-shell, multi-command completion engine: provides zsh completions for
+  # hundreds of CLI tools (aws, git, docker, gh, npm, cargo, ...) out of the box,
+  # so most tools don't need a hand-written completion block like kubectl below.
+  programs.carapace.enable = true;
+
   programs.zsh = {
     enable = true;
     syntaxHighlighting.enable = true;

@@ -34,6 +34,7 @@
     pkgs.gh
   ] ++ lib.optionals pkgs.stdenv.isDarwin [
     pkgs.coreutils # provides `dd` with --status=progress
+    pkgs.colima # docker daemon (lightweight VM), lower battery use than Docker Desktop
   ] ++ lib.optionals pkgs.stdenv.isLinux [
     pkgs.gdb # gdb doesn't build on macOS, only install on Linux
     pkgs.iputils # provides `ping`, `ifconfig`, ...

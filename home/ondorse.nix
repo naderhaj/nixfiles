@@ -1,4 +1,4 @@
-{ pkgs, inputs, ... }:
+{ pkgs, inputs, lib, ... }:
 
 {
   imports = [
@@ -18,11 +18,18 @@
 
   programs.htop.enable = true;
 
+  # Installs mise and wires up `mise activate zsh` via home-manager's zsh integration
+  programs.mise.enable = true;
+
   # Pin nix registry so `nix search` / `nix shell` use our locked nixpkgs
   # (also pinned system-wide via nix-darwin; kept here as belt-and-suspenders)
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
 
   programs.git.settings.user.email = "hajlaoui.nader@gmail.com";
+
+  programs.zsh.shellAliases = {
+    awslogin = "aws sso login --profile dev";
+  };
 
   home.stateVersion = "24.11";
 
@@ -30,10 +37,13 @@
     # https://github.com/NixOS/nixpkgs/blob/master/pkgs/data/fonts/nerdfonts/default.nix
     # nerdfonts
     #bitwarden-cli # it causes an error
-    mise
     uv
     awscli
     wireguard-tools
+    postgresql
+  ] ++ [
+    pkgs.unstable.dive
+    pkgs.unstable.k9s
   ];
 
   home.sessionVariables = {
