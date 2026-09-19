@@ -32,6 +32,7 @@
     pkgs.unstable.claude-code
     pkgs.nodejs_24
     pkgs.gh
+    pkgs.unstable.opencode
   ] ++ lib.optionals pkgs.stdenv.isDarwin [
     pkgs.coreutils # provides `dd` with --status=progress
     pkgs.colima # docker daemon (lightweight VM), lower battery use than Docker Desktop
