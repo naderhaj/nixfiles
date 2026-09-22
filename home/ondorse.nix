@@ -40,8 +40,8 @@
     uv
     awscli
     wireguard-tools
-    postgresql
   ] ++ [
+    pkgs.unstable.postgresql
     pkgs.unstable.dive
     pkgs.unstable.k9s
   ];
