@@ -9,7 +9,7 @@
     ../modules/home/git.nix
     ../modules/home/tmux
     ../modules/home/ghostty
-
+    ../modules/home/personal.nix
   ];
 
   home.homeDirectory = "/Users/naderh";

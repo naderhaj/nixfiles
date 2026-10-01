@@ -11,6 +11,7 @@
     ../modules/home/tmux
     ../modules/home/ghostty
     ../modules/home/dunst.nix
+    ../modules/home/personal.nix
   ];
 
   programs.git.settings.user.email = "hajlaoui.nader@gmail.com";
