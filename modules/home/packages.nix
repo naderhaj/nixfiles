@@ -4,15 +4,11 @@
     pkgs.man-pages # linux programmer's manual
     pkgs.zip # archives
     pkgs.unzip # archives
-    pkgs.lsd
     pkgs.docker
-    pkgs.jq
     pkgs.docker-compose # docker manager
     pkgs.fastfetch # command-line system information
     pkgs.ripgrep # fast grep
     pkgs.tree # display files in a tree view
-    pkgs.eza # a better `ls`
-    pkgs.bottom # a better `top`
     pkgs.tree-sitter # syntax highlighting
     pkgs.fd # a better `find`
     pkgs.file # file type

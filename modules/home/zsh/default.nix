@@ -1,15 +1,13 @@
 { pkgs, lib, config, machine, ... }:
 {
 
-  programs.direnv = {
-    enable = true;
-    nix-direnv.enable = true;
-  };
-
   # Multi-shell, multi-command completion engine: provides zsh completions for
-  # hundreds of CLI tools (aws, git, docker, gh, npm, cargo, ...) out of the box,
-  # so most tools don't need a hand-written completion block like kubectl below.
+  # hundreds of CLI tools (aws, git, docker, gh, kubectl, npm, cargo, ...) out of
+  # the box, so most tools don't need a hand-written completion block.
   programs.carapace.enable = true;
+
+  # Frecency-based `cd` replacement: `z foo` jumps, `zi` picks interactively.
+  programs.zoxide.enable = true;
 
   programs.zsh = {
     enable = true;
@@ -17,19 +15,14 @@
     enableCompletion = true;
     autosuggestion.enable = true;
 
-    oh-my-zsh = {
-      enable = true;
-      plugins = [ "z" "virtualenv"];
-    };
-
     plugins = [
       {
         name = "fzf-tab";
         src = pkgs.fetchFromGitHub {
           owner = "Aloxaf";
           repo = "fzf-tab";
-          rev = "v1.2.0";
-          sha256 = "sha256-q26XVS/LcyZPRqDNwKKA9exgBByE0muyuNb0Bbar2lY=";
+          rev = "v1.3.0";
+          sha256 = "sha256-8atbysoOyCBW2OYKmdc91x9V/Mk3eyg3hvzvhJpQ32w=";
         };
       }
       {
@@ -45,29 +38,62 @@
     ];
 
     localVariables = {
-      POWERLEVEL9K_MODE = "awesome-patched";
-      HYPHEN_INSENSITIVE = "true";
-      COMPLETION_WAITING_DOTS = "true";
-      ZSH_HIGHLIGHT_MAXLENGTH = "20";
       JK_MACHINE_NAME = "nh-shell";
     };
 
-    shellAliases = { };
+    # type a directory name (e.g. `..`) to cd into it
+    autocd = true;
 
-    initContent = ''
-      # powerlevel10k
-      source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
-      source ${./p10k.zsh}
+    shellAliases = {
+      "..." = "cd ../..";
+      "...." = "cd ../../..";
+    };
 
-      # kubectl completion (also applies to the `k` alias)
-      if command -v kubectl >/dev/null 2>&1; then
-        source <(kubectl completion zsh)
+    initContent = lib.mkMerge [
+      # Load the direnv environment before the instant prompt so its output
+      # doesn't trigger p10k's "console output during initialization" warning.
+      # The regular direnv hook (added by programs.direnv) still runs later.
+      (lib.mkOrder 400 ''
+        emulate zsh -c "$(${lib.getExe config.programs.direnv.package} export zsh)"
+      '')
+
+      # powerlevel10k instant prompt; must stay at the very top of .zshrc.
+      # Anything that needs console input (password prompts, [y/n]
+      # confirmations, etc.) must go above this block.
+      (lib.mkBefore ''
+        if [[ -r "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh" ]]; then
+          source "''${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-''${(%):-%n}.zsh"
+        fi
+      '')
+
+      ''
+        # powerlevel10k
+        source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
+        source ${./p10k.zsh}
+
+        # colorized man pages (via less termcap overrides)
+        export LESS_TERMCAP_mb=$'\e[1;31m'     # begin blink
+        export LESS_TERMCAP_md=$'\e[1;36m'     # begin bold (headings, options) → cyan
+        export LESS_TERMCAP_me=$'\e[0m'        # end bold/blink
+        export LESS_TERMCAP_so=$'\e[01;33m'    # begin standout (status bar, search hits) → yellow
+        export LESS_TERMCAP_se=$'\e[0m'        # end standout
+        export LESS_TERMCAP_us=$'\e[1;32m'     # begin underline (arguments) → green
+        export LESS_TERMCAP_ue=$'\e[0m'        # end underline
+        export GROFF_NO_SGR=1                  # needed on some distros (Fedora, Arch, newer Debian) or colors won't show
+      ''
+
+      # let the `k` alias reuse kubectl's completion; runs after carapace has
+      # registered its completers
+      (lib.mkAfter ''
         compdef k=kubectl
-      fi
-    '';
+      '')
+    ];
 
     history = {
       size = 100000;
+      save = 100000;
+      extended = true;
+      expireDuplicatesFirst = true;
     };
 
   };

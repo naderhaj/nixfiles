@@ -25,13 +25,7 @@
 
   home.stateVersion = "24.11";
 
-  home.packages = with pkgs; [
-    # https://github.com/NixOS/nixpkgs/blob/master/pkgs/data/fonts/nerdfonts/default.nix
-    # nerdfonts
-    #bitwarden-cli # it causes an error
-    unstable.postgresql
-    unstable.k9s
-  ];
+  home.packages = [ ];
 
   home.sessionVariables = {
     LANG = "en_US.UTF-8";

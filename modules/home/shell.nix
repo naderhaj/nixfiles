@@ -13,7 +13,7 @@
     stopanddeleteallcontainers = "docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)";
     deleteallvolumes = "docker volume rm $(docker volume ls -q)";
     zshreload = "source ~/.zshrc";
-    zshrc = "nvim ~/.zshrc";
+    zshrc = "nvim ~/projects/nixfiles/modules/home/zsh/default.nix";
     c = "clear";
     # git
     gs = "git status";
