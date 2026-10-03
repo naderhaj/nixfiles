@@ -1,4 +1,4 @@
-{ ... }:
+{ inputs, ... }:
 let
   snippetFiles = {
     "global.json" = ./nvim/snippets/global.json;
@@ -12,7 +12,13 @@ in
     ./shell.nix
     ./fzf.nix
     ./nvim/nvim.nix
+    inputs.nix-index-database.homeModules.nix-index
   ];
+
+  # `nix-locate` + command-not-found handler, backed by the prebuilt database
+  programs.nix-index.enable = true;
+  # `, <cmd>` runs any nixpkgs program without installing it
+  programs.nix-index-database.comma.enable = true;
 
   # https://github.com/nix-community/nix-direnv#via-home-manager
   programs.direnv.enable = true;

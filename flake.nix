@@ -27,6 +27,13 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
+    # Prebuilt, weekly-updated nix-index database (powers `,` and the zsh
+    # command-not-found handler). Refresh with: nix flake update nix-index-database
+    nix-index-database = {
+      url = "github:nix-community/nix-index-database";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
   };
 
   outputs = inputs@{ self, darwin, nixpkgs, home-manager, ... }:
@@ -43,6 +50,9 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.zeus = import ./home/zeus.nix;
+              home-manager.extraSpecialArgs = {
+                inherit inputs;
+              };
             }
           ];
         };
