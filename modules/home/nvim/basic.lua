@@ -10,12 +10,12 @@ vim.opt.termguicolors = true
 
 -- leader
 g.mapleader = " "
-g.localmapleader = " "
+g.maplocalleader = " "
 
 o.number = true
 o.relativenumber = true
 o.updatetime = 300
-o.mouse = "v"
+o.mouse = "a"
 o.swapfile = false
 o.scrollback = 100000
 o.termguicolors = true

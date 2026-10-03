@@ -1,27 +1,13 @@
-require("nvim-treesitter").setup({
-	autotag = {
-		enable = true,
-		disable = {},
-	},
-	highlight = {
-		enable = true,
-		disable = {},
-	},
-	incremental_selection = {
-		enable = true,
-		disable = {},
-		keymaps = {
-			init_selection = "gnn",
-			node_incremental = "grn",
-			scope_incremental = "grc",
-			node_decremental = "grm",
-		},
-	},
-	indent = {
-		enable = false,
-		disable = {},
-	},
+-- nvim-treesitter's `main` branch no longer takes highlight/indent options in
+-- setup(); highlighting has to be started per buffer. Parsers come from Nix
+-- (nvim-treesitter.withPlugins), so pcall skips filetypes without one.
+vim.api.nvim_create_autocmd("FileType", {
+	callback = function(args)
+		pcall(vim.treesitter.start, args.buf)
+	end,
 })
+
+require("nvim-ts-autotag").setup()
 
 require("treesitter-context").setup({
 	enable = false,

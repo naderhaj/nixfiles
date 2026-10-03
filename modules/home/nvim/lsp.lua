@@ -63,6 +63,11 @@ end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+-- for nvim-ufo; must be set before the servers below copy `capabilities`
+capabilities.textDocument.foldingRange = {
+	dynamicRegistration = false,
+	lineFoldingOnly = true,
+}
 
 -- Rust config
 vim.g.rustaceanvim = {
@@ -204,6 +209,8 @@ vim.lsp.enable("gopls")
 
 -- Lua Config
 vim.lsp.config["lua_ls"] = {
+	capabilities = capabilities,
+	on_attach = attach_keymaps,
 	filetypes = { "lua" },
 	root_markers = { ".luarc.json", ".luarc.jsonc", ".stylua.toml", ".git" },
 	on_init = function(client)
@@ -261,11 +268,6 @@ vim.lsp.config["jdtls"] = {
 vim.lsp.enable("jdtls")
 
 require("telescope").load_extension("ui-select")
-
-capabilities.textDocument.foldingRange = {
-	dynamicRegistration = false,
-	lineFoldingOnly = true,
-}
 
 -- Display number of folded lines
 local ufo_handler = function(virtText, lnum, endLnum, width, truncate)
