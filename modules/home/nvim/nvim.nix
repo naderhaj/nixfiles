@@ -15,6 +15,8 @@
       clangd = "${pkgs.llvmPackages_19.clang-tools}/bin/clangd",
       gopls = "${pkgs.gopls}/bin/gopls",
       jdtls = "${pkgs.jdt-language-server}/bin/jdtls",
+      yaml_language_server = "${pkgs.yaml-language-server}/bin/yaml-language-server",
+      helm_ls = "${pkgs.helm-ls}/bin/helm_ls",
 
       -- Formatters
       ruff = "${pkgs.ruff}/bin/ruff",
@@ -71,6 +73,7 @@
           sql
           dockerfile
           yaml
+          helm
           markdown
           vim
           gitignore
@@ -91,6 +94,7 @@
       trouble-nvim
       nvim-metals
       nvim-lspconfig
+      SchemaStore-nvim # JSON/YAML schemas (GitHub Actions, compose, Chart.yaml, ...)
       # navigation
       flash-nvim
       # folding

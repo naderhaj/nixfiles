@@ -307,6 +307,63 @@ vim.lsp.config["jdtls"] = {
 }
 vim.lsp.enable("jdtls")
 
+-- Helm: nvim has no built-in detection. templates/*.yaml only counts as Helm
+-- inside a chart (a Chart.yaml above it); otherwise it stays plain YAML.
+vim.filetype.add({
+	pattern = {
+		[".*/templates/.*%.ya?ml"] = function(path)
+			return vim.fs.root(path, "Chart.yaml") and "helm" or nil
+		end,
+		[".*/templates/.*%.tpl"] = "helm",
+		["helmfile.*%.ya?ml"] = "helm",
+	},
+})
+
+-- YAML Config
+vim.lsp.config["yamlls"] = {
+	capabilities = capabilities,
+	on_attach = function(client, bufnr)
+		attach_keymaps(client, bufnr)
+		-- apply the Kubernetes schema to any file that looks like a manifest,
+		-- wherever it lives
+		local head = table.concat(vim.api.nvim_buf_get_lines(bufnr, 0, 50, false), "\n")
+		if head:match("apiVersion:") and head:match("kind:") then
+			local schemas = client.settings.yaml.schemas
+			schemas.kubernetes = schemas.kubernetes or {}
+			table.insert(schemas.kubernetes, vim.api.nvim_buf_get_name(bufnr))
+			client:notify("workspace/didChangeConfiguration", { settings = client.settings })
+		end
+	end,
+	cmd = { paths.yaml_language_server, "--stdio" },
+	filetypes = { "yaml", "yaml.docker-compose" },
+	root_markers = { ".git" },
+	settings = {
+		redhat = { telemetry = { enabled = false } },
+		yaml = {
+			format = { enable = false }, -- don't let format-on-save rewrite manifests
+			schemaStore = { enable = false, url = "" }, -- use SchemaStore.nvim's list instead
+			schemas = require("schemastore").yaml.schemas(),
+		},
+	},
+}
+vim.lsp.enable("yamlls")
+
+-- Helm Config
+vim.lsp.config["helm_ls"] = {
+	capabilities = capabilities,
+	on_attach = attach_keymaps,
+	cmd = { paths.helm_ls, "serve" },
+	filetypes = { "helm" },
+	root_markers = { "Chart.yaml" },
+	settings = {
+		["helm-ls"] = {
+			-- helm-ls runs yaml-language-server internally for the YAML parts of templates
+			yamlls = { path = paths.yaml_language_server },
+		},
+	},
+}
+vim.lsp.enable("helm_ls")
+
 require("telescope").load_extension("ui-select")
 
 -- Display number of folded lines
