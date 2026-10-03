@@ -43,13 +43,7 @@
       gitsigns-nvim
       conform-nvim
       # completion
-      nvim-cmp
-      cmp-nvim-lsp
-      cmp-buffer
-      cmp-vsnip
-      cmp-path
-      cmp-treesitter
-      vim-vsnip
+      blink-cmp
       # markdown
       render-markdown-nvim
       # editing
@@ -94,7 +88,6 @@
       nvim-treesitter-context
       nvim-ts-autotag
       # lsp
-      lspkind-nvim
       trouble-nvim
       nvim-metals
       nvim-lspconfig

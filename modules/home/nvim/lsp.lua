@@ -62,7 +62,7 @@ local attach_keymaps = function(client, bufnr)
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+capabilities = require("blink.cmp").get_lsp_capabilities(capabilities)
 -- for nvim-ufo; must be set before the servers below copy `capabilities`
 capabilities.textDocument.foldingRange = {
 	dynamicRegistration = false,
@@ -85,7 +85,8 @@ vim.g.rustaceanvim = {
 	},
 }
 
-require("crates").setup({})
+-- in-process LSP mode, so Cargo.toml completion works without an nvim-cmp source
+require("crates").setup({ lsp = { enabled = true, completion = true, actions = true, hover = true } })
 
 -- Python config
 vim.lsp.config["basedpyright"] = {

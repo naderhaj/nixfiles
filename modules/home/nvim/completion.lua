@@ -1,89 +1,33 @@
-local has_words_before = function()
-	local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-	return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
-local feedkey = function(key, mode)
-	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-end
-
-local cmp = require("cmp")
-local lspkind = require("lspkind")
-
-cmp.setup({
-	formatting = {
-		format = lspkind.cmp_format({
-			mode = "symbol_text",
-			maxwidth = 50,
-			ellipsis_char = "...",
-			show_labelDetails = true, -- show source name
-			before = function(entry, vim_item)
-				-- Show source name
-				vim_item.menu = "[" .. entry.source.name .. "]"
-				return vim_item
-			end,
-		}),
-	},
-	snippet = {
-		expand = function(args)
-			vim.fn["vsnip#anonymous"](args.body)
-		end,
-	},
-	sources = {
-		{ name = "nvim_lsp", priority = 1000 },
-		{ name = "crates", priority = 750 },
-		{ name = "vsnip", priority = 500 },
-		{ name = "treesitter", priority = 300 },
-		{ name = "path", priority = 250 },
-		{ name = "buffer", priority = 100 },
-	},
-	mapping = {
-		["<C-d>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { "i", "c" }),
-		["<C-f>"] = cmp.mapping(cmp.mapping.scroll_docs(4), { "i", "c" }),
-		["<C-Space>"] = cmp.mapping(cmp.mapping.complete(), { "i", "c" }),
-		["<C-y>"] = cmp.config.disable,
-		["<C-e>"] = cmp.mapping({
-			i = cmp.mapping.abort(),
-			c = cmp.mapping.close(),
-		}),
-		["<CR>"] = cmp.mapping.confirm({
-			select = true,
-		}),
-		["<Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_next_item()
-			elseif vim.fn["vsnip#available"](1) == 1 then
-				feedkey("<Plug>(vsnip-expand-or-jump)", "")
-			elseif has_words_before() then
-				cmp.complete()
-			else
-				fallback()
-			end
-		end, { "i", "s" }),
-
-		["<S-Tab>"] = cmp.mapping(function(fallback)
-			if cmp.visible() then
-				cmp.select_prev_item()
-			elseif vim.fn["vsnip#available"](-1) == 1 then
-				feedkey("<Plug>(vsnip-jump-prev)", "")
-			end
-		end, { "i", "s" }),
+require("blink.cmp").setup({
+	-- same keys as the previous nvim-cmp setup
+	keymap = {
+		preset = "none",
+		["<C-Space>"] = { "show", "show_documentation", "hide_documentation" },
+		["<C-e>"] = { "hide", "fallback" },
+		["<CR>"] = { "accept", "fallback" },
+		["<Tab>"] = { "select_next", "snippet_forward", "fallback" },
+		["<S-Tab>"] = { "select_prev", "snippet_backward", "fallback" },
+		["<C-d>"] = { "scroll_documentation_up", "fallback" },
+		["<C-f>"] = { "scroll_documentation_down", "fallback" },
 	},
 	completion = {
-		--autocomplete = false, -- autocomplete only on trigger
-		completeopt = "menu,menuone,noinsert",
+		list = { selection = { preselect = true, auto_insert = false } }, -- like completeopt=noinsert
+		-- a bit larger than the defaults (10 items tall, 15 cols min width)
+		menu = { max_height = 15, min_width = 30 },
+		-- defaults: 80 cols wide, 20 lines tall
+		documentation = { auto_show = true, window = { max_width = 100, max_height = 30 } },
 	},
-})
-
-local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-cmp.event:on("confirm_done", cmp_autopairs.on_confirm_done({ map_char = { text = "" } }))
-
--- dadbod
-cmp.setup.filetype({ "sql" }, {
+	-- default: 10 lines tall
+	signature = { enabled = true, window = { max_height = 15 } }, -- parameter hints while typing inside (...)
 	sources = {
-		{ name = "vim-dadbod-completion" },
-		{ name = "buffer" },
+		default = { "lsp", "path", "snippets", "buffer" },
+		per_filetype = { sql = { "dadbod", "buffer" } },
+		providers = {
+			dadbod = { name = "Dadbod", module = "vim_dadbod_completion.blink" },
+			-- snippets are read from ~/.config/nvim/snippets/<filetype>.json;
+			-- global.json applies to every filetype
+			snippets = { opts = { global_snippets = { "global" } } },
+		},
 	},
+	fuzzy = { implementation = "prefer_rust_with_warning" },
 })
-
-vim.g.vsnip_snippet_dir = "~/.config/nvim/snippets/"
