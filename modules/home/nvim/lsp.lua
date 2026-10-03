@@ -107,6 +107,21 @@ vim.lsp.config["basedpyright"] = {
 }
 vim.lsp.enable("basedpyright")
 
+-- Ruff as a language server: inline lint diagnostics + quick fixes
+-- (fix all, organize imports). Formatting stays with conform.
+vim.lsp.config["ruff"] = {
+	capabilities = capabilities,
+	on_attach = function(client, bufnr)
+		attach_keymaps(client, bufnr)
+		-- leave hover to basedpyright, which has the type information
+		client.server_capabilities.hoverProvider = false
+	end,
+	cmd = { paths.ruff, "server" },
+	filetypes = { "python" },
+	root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git" },
+}
+vim.lsp.enable("ruff")
+
 -- Nix config
 vim.lsp.config["nil_ls"] = {
 	capabilities = capabilities,
