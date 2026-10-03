@@ -1,15 +1,4 @@
 { pkgs, ... }:
-let
-  gruberDarker = pkgs.vimUtils.buildVimPlugin {
-    name = "gruber-darker-nvim";
-    src = pkgs.fetchFromGitHub {
-      owner = "blazkowolf";
-      repo = "gruber-darker.nvim";
-      rev = "master";
-      sha256 = "dMs2gdzhS8DLg6P0+msJ+cYluV9LoXE5cW3rI2i+tus=";
-    };
-  };
-in
 {
   # Generate nix-paths.lua — the only Nix-interpolated Lua file.
   # All other Lua files require("nix-paths") to get package paths.
@@ -42,11 +31,8 @@ in
   programs.neovim = {
     enable = true;
     plugins = with pkgs.vimPlugins; [
-      # themes
-      catppuccin-nvim
+      # theme
       onedark-nvim
-      gruberDarker
-      kanagawa-nvim
       # core
       telescope-nvim
       telescope-ui-select-nvim
@@ -142,8 +128,6 @@ in
       toggleterm-nvim
       # markdown preview
       glow-nvim
-      # discipline
-      pkgs.vimPlugins.hardtime-nvim
     ];
 
     initLua = builtins.concatStringsSep "\n" [
@@ -172,7 +156,6 @@ in
       (builtins.readFile ./neoclip.lua)
       (builtins.readFile ./surround.lua)
       (builtins.readFile ./terminal.lua)
-      (builtins.readFile ./hardtime.lua)
       (builtins.readFile ./markdown.lua)
       (builtins.readFile ./blink-highlight.lua)
       (builtins.readFile ./glow-setup.lua)

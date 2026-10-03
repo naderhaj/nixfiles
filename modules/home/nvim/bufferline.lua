@@ -94,9 +94,9 @@ vim.diagnostic.config({
 
 require("bufferline").setup({
 	options = {
-		numbers = "both",
 		close_command = function(bufnum)
-			require("bufdelete").bufdelete(bufnum, false)
+			-- closes the buffer but keeps the window layout
+			require("mini.bufremove").delete(bufnum, false)
 		end,
 		right_mouse_command = "vertical sbuffer %d",
 		indicator = {

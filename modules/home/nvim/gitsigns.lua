@@ -80,10 +80,4 @@ require("gitsigns").setup({
 	end,
 })
 
-vim.api.nvim_set_keymap(
-	"n",
-	"<leader>gd",
-	'<cmd>lua require("gitsigns").diffthis(nil, {vertical=true})<CR>',
-	{ noremap = true, silent = true }
-)
 
