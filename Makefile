@@ -2,27 +2,27 @@
 
 # Build and switch macOS (Darwin) configuration
 mbp-switch:
-	./scripts/darwin.sh
+	nh darwin switch -H mbp2023 .
 
-# Dry-run macOS build without switching
+# Build macOS without switching (shows package diff)
 mbp-build:
-	darwin-rebuild build --flake .#mbp2023 --dry-run
+	nh darwin build -H mbp2023 .
 
 # Build and switch work macOS (ondorse)
 ondorse-switch:
-	./scripts/darwin.sh ondorse
+	nh darwin switch -H ondorse .
 
-# Dry-run work macOS build without switching
+# Build work macOS without switching (shows package diff)
 ondorse-build:
-	darwin-rebuild build --flake .#ondorse --dry-run
+	nh darwin build -H ondorse .
 
 # Build and switch zeus (NixOS)
 zeus-switch:
-	sudo nixos-rebuild switch --flake .#zeus
+	nh os switch -H zeus .
 
-# Dry-run zeus build without switching
+# Build zeus without switching (shows package diff)
 zeus-build:
-	nix build .#nixosConfigurations.zeus.config.system.build.toplevel --dry-run
+	nh os build -H zeus .
 
 # Check flake evaluates without errors
 check:

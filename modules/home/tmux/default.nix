@@ -7,9 +7,12 @@ in
     enable = true;
     aggressiveResize = true;
     baseIndex = 1;
-    terminal = "screen-256color";
+    terminal = "tmux-256color";
     keyMode = "vi";
     escapeTime = 0;
+    historyLimit = 100000;
+    mouse = true;
+    focusEvents = true; # lets nvim's autoread notice files changed on disk
     shortcut = "a";
 
     extraConfig = tmuxConf;

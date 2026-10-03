@@ -106,13 +106,18 @@ nix flake check
 
 A `Makefile` is provided as a single entry point for common tasks:
 
+The build/switch targets go through [nh](https://github.com/nix-community/nh) (installed via
+`programs.nh` in `modules/home/common.nix`), which shows a live build tree and a package diff.
+On a machine where nh isn't installed yet, bootstrap once with `./scripts/darwin.sh [host]`
+or `sudo nixos-rebuild switch --flake .#zeus`.
+
 ```bash
 make mbp-switch      # build + switch macOS (mbp2023)
-make mbp-build       # dry-run macOS build
+make mbp-build       # build macOS without switching, show package diff
 make ondorse-switch  # build + switch work macOS (ondorse)
-make ondorse-build   # dry-run ondorse build
+make ondorse-build   # build ondorse without switching, show package diff
 make zeus-switch     # build + switch zeus (NixOS)
-make zeus-build      # dry-run zeus build
+make zeus-build      # build zeus without switching, show package diff
 make check           # nix flake check
 make update          # update all inputs
 make gc              # garbage collect old generations

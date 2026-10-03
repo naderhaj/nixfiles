@@ -7,7 +7,6 @@
     pkgs.docker
     pkgs.docker-compose # docker manager
     pkgs.fastfetch # command-line system information
-    pkgs.ripgrep # fast grep
     pkgs.tree # display files in a tree view
     pkgs.tree-sitter # syntax highlighting
     pkgs.fd # a better `find`
@@ -15,6 +14,8 @@
     pkgs.xxd # hexdump
     pkgs.nmap # network scanner
     pkgs.duf # disk usage
+    pkgs.dust # disk usage tree
+    pkgs.sd # simpler find & replace
     pkgs.lua-language-server
     pkgs.lua
     pkgs.go

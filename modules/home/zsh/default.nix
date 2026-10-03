@@ -44,7 +44,18 @@
     # type a directory name (e.g. `..`) to cd into it
     autocd = true;
 
+    # allow `# comments` in typed/pasted commands
+    setOptions = [ "INTERACTIVE_COMMENTS" ];
+
+    # type a prefix, then ↑/↓ cycles through history entries containing it
+    historySubstringSearch = {
+      enable = true;
+      searchUpKey = [ "^[[A" "^[OA" ];
+      searchDownKey = [ "^[[B" "^[OB" ];
+    };
+
     shellAliases = {
+      "-" = "cd -";
       "..." = "cd ../..";
       "...." = "cd ../../..";
     };
@@ -75,6 +86,13 @@
         zstyle ':fzf-tab:complete:(cd|__zoxide_z):*' fzf-preview 'eza -1 --color=always $realpath'
         # group headers ([files], [directories], ...); switch groups with < and >
         zstyle ':completion:*:descriptions' format '[%d]'
+        # case-insensitive completion; also treats - and _ as interchangeable
+        zstyle ':completion:*' matcher-list 'm:{a-zA-Z-_}={A-Za-z_-}'
+
+        # Ctrl-X Ctrl-E: edit the current command line in $EDITOR
+        autoload -U edit-command-line
+        zle -N edit-command-line
+        bindkey '^X^E' edit-command-line
 
         # colorized man pages (via less termcap overrides)
         export LESS_TERMCAP_mb=$'\e[1;31m'     # begin blink
