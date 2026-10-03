@@ -71,6 +71,11 @@
         source ${pkgs.zsh-powerlevel10k}/share/zsh-powerlevel10k/powerlevel10k.zsh-theme
         source ${./p10k.zsh}
 
+        # fzf-tab: preview directory contents when completing cd / z
+        zstyle ':fzf-tab:complete:(cd|__zoxide_z):*' fzf-preview 'eza -1 --color=always $realpath'
+        # group headers ([files], [directories], ...); switch groups with < and >
+        zstyle ':completion:*:descriptions' format '[%d]'
+
         # colorized man pages (via less termcap overrides)
         export LESS_TERMCAP_mb=$'\e[1;31m'     # begin blink
         export LESS_TERMCAP_md=$'\e[1;36m'     # begin bold (headings, options) → cyan
