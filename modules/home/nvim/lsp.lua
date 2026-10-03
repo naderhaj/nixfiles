@@ -23,17 +23,19 @@ local attach_keymaps = function(client, bufnr)
 	local opts = { buffer = bufnr }
 
 	-- goto
-	vim.keymap.set("n", "<leader>lgD", vim.lsp.buf.declaration, opts)
-	vim.keymap.set("n", "<leader>lgd", vim.lsp.buf.definition, opts)
-	vim.keymap.set("n", "<leader>lgi", vim.lsp.buf.implementation, opts)
-	vim.keymap.set("n", "<leader>lgr", vim.lsp.buf.references, opts)
-	vim.keymap.set("n", "<leader>lgt", vim.lsp.buf.type_definition, opts)
+	vim.keymap.set("n", "<leader>lgD", vim.lsp.buf.declaration, { buffer = bufnr, desc = "declaration" })
+	vim.keymap.set("n", "<leader>lgd", vim.lsp.buf.definition, { buffer = bufnr, desc = "definition" })
+	-- override the built-in text-search gd in LSP buffers
+	vim.keymap.set("n", "gd", vim.lsp.buf.definition, { buffer = bufnr, desc = "go to definition (LSP)" })
+	vim.keymap.set("n", "<leader>lgi", vim.lsp.buf.implementation, { buffer = bufnr, desc = "implementation" })
+	vim.keymap.set("n", "<leader>lgr", vim.lsp.buf.references, { buffer = bufnr, desc = "references" })
+	vim.keymap.set("n", "<leader>lgt", vim.lsp.buf.type_definition, { buffer = bufnr, desc = "type definition" })
 	vim.keymap.set("n", "<leader>lgn", function()
 		vim.diagnostic.jump({ count = 1 })
-	end, opts)
+	end, { buffer = bufnr, desc = "next diagnostic" })
 	vim.keymap.set("n", "<leader>lgp", function()
 		vim.diagnostic.jump({ count = -1 })
-	end, opts)
+	end, { buffer = bufnr, desc = "previous diagnostic" })
 
 	-- code action
 	vim.keymap.set("n", "<leader>lca", vim.lsp.buf.code_action, opts)
@@ -46,19 +48,16 @@ local attach_keymaps = function(client, bufnr)
 	end, opts)
 
 	-- hover & signature
-	vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, opts)
+	vim.keymap.set("n", "<leader>lh", vim.lsp.buf.hover, { buffer = bufnr, desc = "hover docs" })
 	vim.keymap.set("n", "<leader>lsh", vim.lsp.buf.signature_help, opts)
 
 	-- rename
-	vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, opts)
+	vim.keymap.set("n", "<leader>ln", vim.lsp.buf.rename, { buffer = bufnr, desc = "rename symbol" })
 
-	-- Metals specific
-	vim.keymap.set("n", "<leader>lmc", function()
-		require("metals").commands()
-	end, opts)
-	vim.keymap.set("n", "<leader>lmi", function()
-		require("metals").toggle_setting("showImplicitArguments")
-	end, opts)
+	-- inline type / parameter-name hints, off by default
+	vim.keymap.set("n", "<leader>li", function()
+		vim.lsp.inlay_hint.enable(not vim.lsp.inlay_hint.is_enabled({ bufnr = bufnr }), { bufnr = bufnr })
+	end, { buffer = bufnr, desc = "toggle inlay hints" })
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -139,7 +138,22 @@ vim.lsp.enable("nil_ls")
 -- Scala nvim-metals config
 metals_config = require("metals").bare_config()
 metals_config.capabilities = capabilities
-metals_config.on_attach = attach_keymaps
+-- Metals keys exist only in Scala buffers, on top of the shared LSP keys
+metals_config.on_attach = function(client, bufnr)
+	attach_keymaps(client, bufnr)
+	require("which-key").add({
+		buffer = bufnr,
+		{ "<leader>lm", group = "metals" },
+		{ "<leader>lmc", function() require("metals").commands() end, desc = "metals commands" },
+		{
+			"<leader>lmi",
+			function() require("metals").toggle_setting("showImplicitArguments") end,
+			desc = "toggle implicit args",
+		},
+		{ "<leader>lmw", function() require("metals").worksheet_hover() end, desc = "worksheet hover" },
+		{ "<leader>lmd", function() require("metals").open_all_diagnostics() end, desc = "all diagnostics" },
+	})
+end
 
 metals_config.settings = {
 	metalsBinaryPath = paths.metals,
@@ -175,6 +189,18 @@ vim.lsp.config["ts_ls"] = {
 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
 	cmd = { paths.typescript_language_server, "--stdio" },
 	root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
+	-- ts_ls only sends inlay hints when asked to
+	settings = (function()
+		local inlayHints = {
+			includeInlayParameterNameHints = "all",
+			includeInlayVariableTypeHints = true,
+			includeInlayFunctionLikeReturnTypeHints = true,
+		}
+		return {
+			typescript = { inlayHints = inlayHints },
+			javascript = { inlayHints = inlayHints },
+		}
+	end)(),
 }
 vim.lsp.enable("ts_ls")
 
@@ -205,6 +231,19 @@ vim.lsp.config["gopls"] = {
 	filetypes = { "go", "gomod", "gowork", "gotmpl" },
 	cmd = { paths.gopls, "serve" },
 	root_markers = { "go.mod", "go.work", ".git" },
+	-- gopls only sends inlay hints when asked to
+	settings = {
+		gopls = {
+			hints = {
+				assignVariableTypes = true,
+				compositeLiteralFields = true,
+				constantValues = true,
+				functionTypeParameters = true,
+				parameterNames = true,
+				rangeVariableTypes = true,
+			},
+		},
+	},
 }
 vim.lsp.enable("gopls")
 

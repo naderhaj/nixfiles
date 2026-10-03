@@ -13,19 +13,12 @@ wk.add({
 -- LSP subgroups
 wk.add({ mode = "n", { "<leader>lc", group = "code action" } })
 wk.add({ mode = "n", { "<leader>lg", group = "goto" } })
-wk.add({ mode = "n", { "<leader>lm", group = "metals" } })
 wk.add({ mode = "n", { "<leader>ls", group = "signature" } })
 wk.add({ mode = "n", { "<leader>lt", group = "trouble" } })
 wk.add({ mode = "n", { "<leader>lw", group = "workspace" } })
 
 -- Trouble
 wk.add({ mode = "n", { "<leader>x", group = "trouble" } })
-
--- a code action
-wk.add({
-	mode = "n",
-	{ "<leader>a", group = "code action" },
-})
 
 -- b buffers
 wk.add({ mode = "n", { "<leader>b", group = "buffers" } })
@@ -45,6 +38,3 @@ wk.add({ mode = "n", { "<leader>s", group = "substitute" } })
 
 -- t tree
 wk.add({ mode = "n", { "<leader>t", group = "tree" } })
-
--- w metals
-wk.add({ mode = "n", { "<leader>w", group = "metals" } })

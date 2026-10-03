@@ -92,7 +92,7 @@
       nvim-metals
       nvim-lspconfig
       # navigation
-      hop-nvim
+      flash-nvim
       # folding
       nvim-ufo
       promise-async
@@ -134,7 +134,6 @@
       (builtins.readFile ./treesitter.lua)
       (builtins.readFile ./telescope-setup.lua)
       (builtins.readFile ./trouble.lua)
-      (builtins.readFile ./metals.lua)
       (builtins.readFile ./gitsigns.lua)
       (builtins.readFile ./fugitive.lua)
       (builtins.readFile ./notify.lua)
@@ -143,7 +142,7 @@
       (builtins.readFile ./bufferline.lua)
       (builtins.readFile ./visuals.lua)
       (builtins.readFile ./json.lua)
-      (builtins.readFile ./hop.lua)
+      (builtins.readFile ./flash.lua)
       (builtins.readFile ./copilot.lua)
       (builtins.readFile ./undotree.lua)
       (builtins.readFile ./neoclip.lua)
