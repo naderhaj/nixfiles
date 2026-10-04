@@ -74,6 +74,7 @@
           dockerfile
           yaml
           helm
+          haskell
           markdown
           vim
           gitignore
@@ -106,6 +107,8 @@
       indent-blankline-nvim
       # copilot
       copilot-vim
+      # haskell (HLS itself comes from each project's dev shell)
+      haskell-tools-nvim
       # rust
       rustaceanvim
       crates-nvim

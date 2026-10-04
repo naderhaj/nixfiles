@@ -322,6 +322,31 @@ vim.lsp.config["jdtls"] = {
 }
 vim.lsp.enable("jdtls")
 
+-- Haskell: haskell-tools.nvim starts HLS itself (don't vim.lsp.enable it).
+-- HLS is taken from PATH, i.e. the project's dev shell via direnv, so it
+-- always matches the project's GHC.
+vim.g.haskell_tools = {
+	hls = {
+		capabilities = capabilities,
+		on_attach = function(client, bufnr, ht)
+			attach_keymaps(client, bufnr)
+			require("which-key").add({
+				buffer = bufnr,
+				{ "<leader>h", group = "haskell" },
+				{ "<leader>hh", ht.hoogle.hoogle_signature, desc = "hoogle search" },
+				{ "<leader>hr", ht.repl.toggle, desc = "toggle GHCi (project)" },
+				{
+					"<leader>hf",
+					function() ht.repl.toggle(vim.api.nvim_buf_get_name(0)) end,
+					desc = "toggle GHCi (current file)",
+				},
+				{ "<leader>he", ht.lsp.buf_eval_all, desc = "evaluate all -- >>> snippets" },
+				{ "<leader>hl", vim.lsp.codelens.run, desc = "run code lens" },
+			})
+		end,
+	},
+}
+
 -- Helm: nvim has no built-in detection. templates/*.yaml only counts as Helm
 -- inside a chart (a Chart.yaml above it); otherwise it stays plain YAML.
 vim.filetype.add({
