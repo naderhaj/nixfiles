@@ -38,7 +38,7 @@
     # nerdfonts
     #bitwarden-cli # it causes an error
     uv
-    awscli
+    awscli2
     wireguard-tools
   ] ++ [
     pkgs.unstable.postgresql
