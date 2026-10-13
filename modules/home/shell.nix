@@ -8,6 +8,7 @@
   };
 
   home.shellAliases = {
+    l = "eza -al";
     lsd = "eza --long --header --git --all";
     dps = "docker ps --all";
     stopanddeleteallcontainers = "docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)";
