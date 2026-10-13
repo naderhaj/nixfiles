@@ -84,6 +84,10 @@
 
         # fzf-tab: preview directory contents when completing cd / z
         zstyle ':fzf-tab:complete:(cd|__zoxide_z):*' fzf-preview 'eza -1 --color=always $realpath'
+        # don't pre-fill the fzf query with the typed word: carapace completers
+        # (cat, ls, ...) pass the full path (e.g. ~/Downloads/) as input, which
+        # matches none of the displayed basenames and filters everything out
+        zstyle ':fzf-tab:*' query-string prefix first
         # group headers ([files], [directories], ...); switch groups with < and >
         zstyle ':completion:*:descriptions' format '[%d]'
         # case-insensitive completion; also treats - and _ as interchangeable

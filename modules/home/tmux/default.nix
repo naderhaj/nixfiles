@@ -11,7 +11,6 @@ in
     keyMode = "vi";
     escapeTime = 0;
     historyLimit = 100000;
-    mouse = true;
     focusEvents = true; # lets nvim's autoread notice files changed on disk
     shortcut = "a";
 
