@@ -52,7 +52,11 @@ let
 
   # ── Exercise 4: inherit from ──────────────────────────────────────────
 
-  config = { host = "localhost"; port = 8080; debug = true; };
+  config = {
+    host = "localhost";
+    port = 8080;
+    debug = true;
+  };
 
   # TODO: Use `inherit (config)` to create { host = config.host; port = config.port; }
   connection = null;
@@ -63,11 +67,16 @@ let
 
   # What does this complex scoping example evaluate to?
   # Think carefully about the resolution order!
-  puzzle = let
-    x = 1;
-    y = 2;
-    s = { x = 10; y = 20; z = 30; };
-  in
+  puzzle =
+    let
+      x = 1;
+      y = 2;
+      s = {
+        x = 10;
+        y = 20;
+        z = 30;
+      };
+    in
     with s;
     x + y + z;
 
@@ -77,16 +86,29 @@ let
   # let bindings (x=1, y=2) shadow the `with s` bindings (x=10, y=20)
   # but z=30 comes from `with s` since there's no `let z`
 
-in {
-  ex1_scoping = scope_test_1 == 10
-             && scope_test_2 == 2
-             && scope_test_3 == 2;
+in
+{
+  ex1_scoping = scope_test_1 == 10 && scope_test_2 == 2 && scope_test_3 == 2;
 
-  ex2_no_with = packages_explicit == [ "git-pkg" "rg-pkg" "fd-pkg" ];
+  ex2_no_with =
+    packages_explicit == [
+      "git-pkg"
+      "rg-pkg"
+      "fd-pkg"
+    ];
 
-  ex3_inherit = meta == { name = "training"; type = "course"; version = "1.0"; };
+  ex3_inherit =
+    meta == {
+      name = "training";
+      type = "course";
+      version = "1.0";
+    };
 
-  ex4_inherit_from = connection == { host = "localhost"; port = 8080; };
+  ex4_inherit_from =
+    connection == {
+      host = "localhost";
+      port = 8080;
+    };
 
   ex5_puzzle = puzzle_answer == 33;
 }

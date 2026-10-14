@@ -29,16 +29,16 @@
 
     # 2.8k screen configuration
     #displayManager = {
-      ## i3-specific display configuration for 2.8K screen
-      #setupCommands = ''
-        #${pkgs.xorg.xrandr}/bin/xrandr --newmode "2880x1800_60.00"  369.00  2880 3096 3408 3936  1800 1803 1813 1862 -hsync +vsync
-        #${pkgs.xorg.xrandr}/bin/xrandr --addmode Virtual1 2880x1800_60.00
-        #${pkgs.xorg.xrandr}/bin/xrandr --output Virtual1 --mode 2880x1800_60.00
-      #'';
+    ## i3-specific display configuration for 2.8K screen
+    #setupCommands = ''
+    #${pkgs.xorg.xrandr}/bin/xrandr --newmode "2880x1800_60.00"  369.00  2880 3096 3408 3936  1800 1803 1813 1862 -hsync +vsync
+    #${pkgs.xorg.xrandr}/bin/xrandr --addmode Virtual1 2880x1800_60.00
+    #${pkgs.xorg.xrandr}/bin/xrandr --output Virtual1 --mode 2880x1800_60.00
+    #'';
     #};
 
     #monitorSection = ''
-      #DisplaySize 406 254
+    #DisplaySize 406 254
     #'';
     # i3 window manager
     windowManager.i3 = {
@@ -75,9 +75,9 @@
     clipmenu
 
     # Additional i3 utilities
-    feh           # image viewer and wallpaper setter
-    arandr        # GUI for xrandr
-    pavucontrol   # audio control
+    feh # image viewer and wallpaper setter
+    arandr # GUI for xrandr
+    pavucontrol # audio control
     networkmanagerapplet
   ];
 

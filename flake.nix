@@ -36,7 +36,14 @@
 
   };
 
-  outputs = inputs@{ self, darwin, nixpkgs, home-manager, ... }:
+  outputs =
+    inputs@{
+      self,
+      darwin,
+      nixpkgs,
+      home-manager,
+      ...
+    }:
     {
 
       nixosConfigurations = {

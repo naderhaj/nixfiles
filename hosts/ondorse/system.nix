@@ -1,4 +1,10 @@
-{ pkgs, config, lib, inputs, ... }:
+{
+  pkgs,
+  config,
+  lib,
+  inputs,
+  ...
+}:
 {
   imports = [
     ../../modules/system/common-packages.nix
@@ -10,11 +16,13 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.allowBroken = true;
 
-
   # Nix daemon, nix.conf and registry are managed by nix-darwin (vanilla Nix)
   nix.enable = true;
   nix.settings = {
-    experimental-features = [ "nix-command" "flakes" ];
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
     trusted-users = [ "naderh" ];
   };
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
@@ -22,7 +30,11 @@
   # Perform garbage collection weekly to maintain low disk usage
   nix.gc = {
     automatic = true;
-    interval = { Weekday = 0; Hour = 0; Minute = 0; };
+    interval = {
+      Weekday = 0;
+      Hour = 0;
+      Minute = 0;
+    };
     options = "--delete-older-than 1w";
   };
   nix.optimise.automatic = true;

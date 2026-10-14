@@ -2,12 +2,12 @@
 
 {
   imports = [
-      ./hardware-configuration.nix
-      ../../modules/system/common-packages.nix
-      ../../modules/system/common-linux-packages.nix
-      ../../modules/system/nixpkgs-overlays.nix
-      ../../modules/system/fonts.nix
-    ];
+    ./hardware-configuration.nix
+    ../../modules/system/common-packages.nix
+    ../../modules/system/common-linux-packages.nix
+    ../../modules/system/nixpkgs-overlays.nix
+    ../../modules/system/fonts.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -15,13 +15,12 @@
   # ssd
   services.fstrim.enable = true;
 
-
   networking.hostName = "zeus";
 
   # Enable networking
   networking.networkmanager.enable = true;
 
-# Set your time zone.
+  # Set your time zone.
   time.timeZone = "Europe/Paris";
 
   # Select internationalisation properties.
@@ -38,7 +37,6 @@
     LC_TELEPHONE = "fr_FR.UTF-8";
     LC_TIME = "fr_FR.UTF-8";
   };
-
 
   # Enable CUPS to print documents.
   services.printing.enable = true;
@@ -58,7 +56,11 @@
   users.users.zeus = {
     isNormalUser = true;
     description = "zeus";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+    ];
     packages = with pkgs; [
       git
       xclip
@@ -76,7 +78,6 @@
   # Workaround for autologin with systemd: https://github.com/NixOS/nixpkgs/issues/103746
   systemd.services."getty@tty1".enable = false;
   systemd.services."autovt@tty1".enable = false;
-
 
   programs.firefox.enable = true;
   programs.neovim = {

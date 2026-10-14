@@ -4,10 +4,9 @@
   programs.kitty = {
     enable = true;
 
-
     extraConfig = ''
       font_size 12.0
-      
+
       font_family      Iosevka 
       bold_font        Iosevka Bold
       italic_font      Iosevka Italic
@@ -24,4 +23,3 @@
   };
 
 }
-

@@ -131,7 +131,7 @@ vim.lsp.config["nil_ls"] = {
 	settings = {
 		["nil"] = {
 			formatting = {
-				command = { paths.nixpkgs_fmt },
+				command = { paths.nixfmt },
 			},
 			diagnostics = {
 				ignored = { "uri_literal" },

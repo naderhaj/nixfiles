@@ -22,7 +22,9 @@ let
   # ── Exercise 2: Write compose ─────────────────────────────────────────
 
   # TODO: Write function composition: compose f g x = f(g(x))
-  compose = f: g: x: f (g x);
+  compose =
+    f: g: x:
+    f (g x);
   # EXPECTED: compose (x: x + 1) (x: x * 2) 3 == 7
 
   # ── Exercise 3: Destructuring ─────────────────────────────────────────
@@ -40,7 +42,12 @@ let
   # ── Exercise 4: Default values ────────────────────────────────────────
 
   # TODO: Write a function that takes { host, port ? 8080 } and returns "host:port"
-  endpoint = { host, port ? 8080 }: "${host}:${toString port}";
+  endpoint =
+    {
+      host,
+      port ? 8080,
+    }:
+    "${host}:${toString port}";
   # EXPECTED: endpoint { host = "localhost"; } == "localhost:8080"
   # EXPECTED: endpoint { host = "localhost"; port = 3000; } == "localhost:3000"
   # HINT: toString for port
@@ -55,25 +62,53 @@ let
   # ── Exercise 6: foldl' ────────────────────────────────────────────────
 
   # TODO: Use builtins.foldl' to compute the product of [ 1 2 3 4 5 ]
-  product = builtins.foldl' (acc: x: acc * x) 1 [ 1 2 3 4 5 ];
+  product = builtins.foldl' (acc: x: acc * x) 1 [
+    1
+    2
+    3
+    4
+    5
+  ];
   # EXPECTED: 120
   # HINT: builtins.foldl' (acc: x: ???) 1 [ 1 2 3 4 5 ]
 
 in
 {
-  ex1_basic = double 5 == 10
-    && add 3 4 == 7
-    && add10 5 == 15;
+  ex1_basic = double 5 == 10 && add 3 4 == 7 && add10 5 == 15;
 
   ex2_compose = compose (x: x + 1) (x: x * 2) 3 == 7;
 
-  ex3_destructuring = greet { name = "Nader"; age = 30; } == "Nader is 30"
-    && addAB { a = 1; b = 2; c = 3; } == 3;
+  ex3_destructuring =
+    greet {
+      name = "Nader";
+      age = 30;
+    } == "Nader is 30"
+    &&
+      addAB {
+        a = 1;
+        b = 2;
+        c = 3;
+      } == 3;
 
-  ex4_defaults = endpoint { host = "localhost"; } == "localhost:8080"
-    && endpoint { host = "localhost"; port = 3000; } == "localhost:3000";
+  ex4_defaults =
+    endpoint { host = "localhost"; } == "localhost:8080"
+    &&
+      endpoint {
+        host = "localhost";
+        port = 3000;
+      } == "localhost:3000";
 
-  ex5_at_pattern = addSum { x = 1; y = 2; z = 3; } == { x = 1; y = 2; z = 3; sum = 3; };
+  ex5_at_pattern =
+    addSum {
+      x = 1;
+      y = 2;
+      z = 3;
+    } == {
+      x = 1;
+      y = 2;
+      z = 3;
+      sum = 3;
+    };
 
   ex6_foldl = product == 120;
 }

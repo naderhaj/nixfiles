@@ -3,16 +3,16 @@
 {
   programs.rofi = {
     enable = true;
-    package = pkgs.rofi;  # Rofi now includes Wayland support
+    package = pkgs.rofi; # Rofi now includes Wayland support
 
     plugins = with pkgs; [
       rofi-calc
       rofi-emoji
     ];
 
-    font = "Iosevka 20";  # Larger for HiDPI
+    font = "Iosevka 20"; # Larger for HiDPI
     terminal = "${pkgs.ghostty}/bin/ghostty";
-    theme = "catppuccin-mocha";  # Use our custom theme
+    theme = "catppuccin-mocha"; # Use our custom theme
 
     extraConfig = {
       modi = "drun,run,window,filebrowser";
@@ -148,9 +148,9 @@
 
   # Additional rofi tools
   home.packages = with pkgs; [
-    xdotool          # For emoji insertion (works with XWayland)
-    wtype            # Wayland typing tool (alternative)
-    rofimoji         # Emoji picker
-    networkmanager   # For nmcli command
+    xdotool # For emoji insertion (works with XWayland)
+    wtype # Wayland typing tool (alternative)
+    rofimoji # Emoji picker
+    networkmanager # For nmcli command
   ];
 }

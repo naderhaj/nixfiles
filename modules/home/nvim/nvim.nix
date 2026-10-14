@@ -8,7 +8,7 @@
       rust_analyzer = "${pkgs.rust-analyzer}/bin/rust-analyzer",
       basedpyright = "${pkgs.basedpyright}/bin/basedpyright-langserver",
       nil_ls = "${pkgs.nil}/bin/nil",
-      nixpkgs_fmt = "${pkgs.nixpkgs-fmt}/bin/nixpkgs-fmt",
+      nixfmt = "${pkgs.nixfmt}/bin/nixfmt",
       metals = "${pkgs.metals}/bin/metals",
       typescript_language_server = "${pkgs.typescript-language-server}/bin/typescript-language-server",
       html_language_server = "${pkgs.vscode-langservers-extracted}/bin/vscode-html-language-server",

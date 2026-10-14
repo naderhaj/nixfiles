@@ -23,36 +23,36 @@
   # Hyprland-specific packages
   environment.systemPackages = with pkgs; [
     # Wayland utilities
-    wl-clipboard         # Clipboard for Wayland
-    wl-clip-persist      # Keep clipboard after app closes
-    cliphist             # Clipboard manager for Wayland
+    wl-clipboard # Clipboard for Wayland
+    wl-clip-persist # Keep clipboard after app closes
+    cliphist # Clipboard manager for Wayland
 
     # Screenshots and screen recording
-    grim                 # Screenshot utility
-    slurp                # Screen area selection
-    swappy               # Screenshot editor
-    wf-recorder          # Screen recorder
+    grim # Screenshot utility
+    slurp # Screen area selection
+    swappy # Screenshot editor
+    wf-recorder # Screen recorder
 
     # Notifications
-    dunst                # Notification daemon
-    libnotify            # For notify-send
+    dunst # Notification daemon
+    libnotify # For notify-send
 
     # File managers
-    thunar               # GUI file manager
+    thunar # GUI file manager
     thunar-archive-plugin
     thunar-volman
 
     # Image viewer and wallpaper
-    imv                  # Wayland image viewer
-    swww                 # Wallpaper daemon for Wayland
+    imv # Wayland image viewer
+    swww # Wallpaper daemon for Wayland
 
     # Application launchers
-    rofi                 # Rofi (includes Wayland support)
+    rofi # Rofi (includes Wayland support)
 
     # Audio/Media control
-    pavucontrol          # Audio control GUI
-    playerctl            # Media player control
-    pamixer              # Audio mixer
+    pavucontrol # Audio control GUI
+    playerctl # Media player control
+    pamixer # Audio mixer
 
     # Brightness control
     brightnessctl
@@ -61,26 +61,26 @@
     networkmanagerapplet
 
     # System monitoring
-    btop                 # Beautiful system monitor
+    btop # Beautiful system monitor
 
     # Polkit agent for authentication
     polkit_gnome
 
     # Screen locker
-    swaylock-effects     # Beautiful lock screen
+    swaylock-effects # Beautiful lock screen
 
     # Idle manager
-    swayidle             # Auto-lock and sleep
+    swayidle # Auto-lock and sleep
 
     # Additional utilities
     killall
     wget
     curl
-    wev                  # Wayland event viewer (for testing keys)
+    wev # Wayland event viewer (for testing keys)
 
     # Cursor themes
-    bibata-cursors       # Beautiful modern cursor theme
-    catppuccin-cursors.mochaDark  # Matches our color scheme
+    bibata-cursors # Beautiful modern cursor theme
+    catppuccin-cursors.mochaDark # Matches our color scheme
   ];
 
   # Enable polkit

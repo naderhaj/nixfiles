@@ -91,7 +91,7 @@ let
 
   # This overlay is CORRECT:
   good_overlay = final: prev: {
-    greeting = prev.greeting + "!";  # Uses the PREVIOUS value
+    greeting = prev.greeting + "!"; # Uses the PREVIOUS value
   };
 
   result_good = null;
@@ -99,32 +99,78 @@ let
   # EXPECTED: { greeting = "hello!"; message = "hello!, world!"; target = "world"; }
 
   # Helper for verification (only used if fix is implemented):
-  _fix = f: let x = f x; in x;
-  _applyOverlays = bF: ovs:
-    _fix (self:
-      builtins.foldl'
-        (prev: overlay: prev // overlay self prev)
-        (bF self)
-        ovs
-    );
-  _r1 = _fix (self: { a = 1; b = self.a + 1; });
-  _pkgSet = _fix (self: {
-    base = { name = "base"; version = "1.0"; };
-    myLib = { name = "mylib"; dep = self.base; };
-    myApp = { name = "myapp"; dep = self.myLib; };
+  _fix =
+    f:
+    let
+      x = f x;
+    in
+    x;
+  _applyOverlays =
+    bF: ovs: _fix (self: builtins.foldl' (prev: overlay: prev // overlay self prev) (bF self) ovs);
+  _r1 = _fix (self: {
+    a = 1;
+    b = self.a + 1;
   });
-  _r_ov = _fix (self: let base = baseF self; in base // overlay1 self base);
-  _r_2ov = _applyOverlays baseF [ overlay1 overlay2 ];
+  _pkgSet = _fix (self: {
+    base = {
+      name = "base";
+      version = "1.0";
+    };
+    myLib = {
+      name = "mylib";
+      dep = self.base;
+    };
+    myApp = {
+      name = "myapp";
+      dep = self.myLib;
+    };
+  });
+  _r_ov = _fix (
+    self:
+    let
+      base = baseF self;
+    in
+    base // overlay1 self base
+  );
+  _r_2ov = _applyOverlays baseF [
+    overlay1
+    overlay2
+  ];
   _r_good = _applyOverlays baseF [ good_overlay ];
 
-in {
+in
+{
   # Use reference implementations for verification:
-  ex1_fix = _r1 == { a = 1; b = 2; };
+  ex1_fix =
+    _r1 == {
+      a = 1;
+      b = 2;
+    };
   ex2_pkgset = _pkgSet.myApp.dep.dep.version == "1.0";
-  ex3_overlay = _r_ov == { greeting = "hello"; message = "hello, Nix!"; target = "Nix"; };
-  ex4_two = _r_2ov == { greeting = "Bonjour"; message = "Bonjour, Nix!"; target = "Nix"; };
-  ex5_generic = _r_2ov == { greeting = "Bonjour"; message = "Bonjour, Nix!"; target = "Nix"; };
-  ex6_good_overlay = _r_good == { greeting = "hello!"; message = "hello!, world!"; target = "world"; };
+  ex3_overlay =
+    _r_ov == {
+      greeting = "hello";
+      message = "hello, Nix!";
+      target = "Nix";
+    };
+  ex4_two =
+    _r_2ov == {
+      greeting = "Bonjour";
+      message = "Bonjour, Nix!";
+      target = "Nix";
+    };
+  ex5_generic =
+    _r_2ov == {
+      greeting = "Bonjour";
+      message = "Bonjour, Nix!";
+      target = "Nix";
+    };
+  ex6_good_overlay =
+    _r_good == {
+      greeting = "hello!";
+      message = "hello!, world!";
+      target = "world";
+    };
 
   # TODO: Uncomment these once you implement fix and applyOverlays:
   # ex1_yours = (fix (self: { a = 1; b = self.a + 1; })) == { a = 1; b = 2; };

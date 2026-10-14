@@ -1,4 +1,10 @@
-{ lib, pkgs, inputs, ... }: {
+{
+  lib,
+  pkgs,
+  inputs,
+  ...
+}:
+{
   # Copy all Hyprland configuration files to ~/.config/hypr/
   home.file = {
     ".config/hypr/hyprland.conf".source = ./hyprland.conf;
@@ -15,8 +21,8 @@
 
   # Additional Wayland-specific packages
   home.packages = with pkgs; [
-    hyprpicker      # Color picker for Hyprland
-    hyprshot        # Screenshot tool for Hyprland
+    hyprpicker # Color picker for Hyprland
+    hyprshot # Screenshot tool for Hyprland
     # Note: Using rofi window mode for Alt+Tab instead of separate switcher
   ];
 }

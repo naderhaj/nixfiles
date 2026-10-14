@@ -4,7 +4,7 @@
 # This exercise uses lib.evalModules to explore the module system in isolation.
 
 let
-  pkgs = import <nixpkgs> {};
+  pkgs = import <nixpkgs> { };
   lib = pkgs.lib;
 
   # ── Exercise 1: Basic evalModules ─────────────────────────────────────
@@ -84,10 +84,15 @@ let
       {
         options.items = lib.mkOption {
           type = lib.types.listOf lib.types.str;
-          default = [];
+          default = [ ];
         };
       }
-      { config.items = [ "alpha" "beta" ]; }
+      {
+        config.items = [
+          "alpha"
+          "beta"
+        ];
+      }
       { config.items = [ "gamma" ]; }
     ];
   };
@@ -136,7 +141,10 @@ let
         options.app = {
           name = lib.mkOption { type = lib.types.str; };
           version = lib.mkOption { type = lib.types.str; };
-          debug = lib.mkOption { type = lib.types.bool; default = false; };
+          debug = lib.mkOption {
+            type = lib.types.bool;
+            default = false;
+          };
         };
       }
       {
@@ -148,11 +156,17 @@ let
   app_name = null;
   # EXPECTED: "training"
 
-in {
+in
+{
   ex1_basic = greeting_value == "Hello from evalModules!";
   ex2_defaults = default_name == "default-name" && default_enabled == true;
   ex3_priority = port_value == 3000;
-  ex4_lists = merged_items == [ "alpha" "beta" "gamma" ];
+  ex4_lists =
+    merged_items == [
+      "alpha"
+      "beta"
+      "gamma"
+    ];
   ex5_mkif = feature_message == "not set";
   ex6_custom = app_name == "training";
 }

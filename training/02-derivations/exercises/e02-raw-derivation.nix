@@ -23,7 +23,10 @@ let
     inherit system;
     builder = "/bin/sh";
     # TODO: Fill in args to write "Hello from a raw derivation!" to $out
-    args = [ "-c" "echo Hello from a raw derivation > $out" ];
+    args = [
+      "-c"
+      "echo Hello from a raw derivation > $out"
+    ];
   };
 
   # ── Exercise 2: Using environment variables ───────────────────────────
@@ -36,7 +39,10 @@ let
     builder = "/bin/sh";
     # TODO: Add a `greeting` attribute and use $greeting in args
     greeting = "Nix is powerful";
-    args = [ "-c" "echo TODO > $out" ];
+    args = [
+      "-c"
+      "echo TODO > $out"
+    ];
     # HINT: args = [ "-c" "echo $greeting > $out" ];
   };
 
@@ -49,7 +55,10 @@ let
     inherit system;
     builder = "/bin/sh";
     # TODO: Use ${hello} to reference the hello derivation's output
-    args = [ "-c" "echo TODO > $out" ];
+    args = [
+      "-c"
+      "echo TODO > $out"
+    ];
     # HINT: args = [ "-c" ''echo "=== $(cat ${hello}) ===" > $out'' ];
   };
 
@@ -80,5 +89,5 @@ let
 
 in
 # Change this to test different exercises:
-  # hello, greeting_drv, wrapper, or dir_drv
+# hello, greeting_drv, wrapper, or dir_drv
 hello

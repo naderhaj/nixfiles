@@ -7,7 +7,9 @@
 #   nix build -f training/02-derivations/exercises/e03-mkderivation.nix \
 #     --arg pkgs 'import <nixpkgs> {}'
 
-{ pkgs ? import <nixpkgs> {} }:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 
 let
   # ── Exercise 1: Package a shell script ────────────────────────────────
@@ -72,7 +74,7 @@ let
   # Run:   ./result/bin/simple-greet
 
 in
-  # Change this to test different exercises:
-  greet-script
-  # hello-c
-  # simple-greet
+# Change this to test different exercises:
+greet-script
+# hello-c
+# simple-greet

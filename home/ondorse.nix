@@ -1,4 +1,9 @@
-{ pkgs, inputs, lib, ... }:
+{
+  pkgs,
+  inputs,
+  lib,
+  ...
+}:
 
 {
   imports = [
@@ -33,18 +38,21 @@
 
   home.stateVersion = "24.11";
 
-  home.packages = with pkgs; [
-    # https://github.com/NixOS/nixpkgs/blob/master/pkgs/data/fonts/nerdfonts/default.nix
-    # nerdfonts
-    #bitwarden-cli # it causes an error
-    uv
-    awscli2
-    wireguard-tools
-  ] ++ [
-    pkgs.unstable.postgresql
-    pkgs.unstable.dive
-    pkgs.unstable.k9s
-  ];
+  home.packages =
+    with pkgs;
+    [
+      # https://github.com/NixOS/nixpkgs/blob/master/pkgs/data/fonts/nerdfonts/default.nix
+      # nerdfonts
+      #bitwarden-cli # it causes an error
+      uv
+      awscli2
+      wireguard-tools
+    ]
+    ++ [
+      pkgs.unstable.postgresql
+      pkgs.unstable.dive
+      pkgs.unstable.k9s
+    ];
 
   home.sessionVariables = {
     LANG = "en_US.UTF-8";

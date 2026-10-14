@@ -1,4 +1,9 @@
-{ config, pkgs, libs, ... }:
+{
+  config,
+  pkgs,
+  libs,
+  ...
+}:
 {
   programs.fish = {
     enable = true;
@@ -9,17 +14,14 @@
     plugins = [ ];
   };
 
-
-  home.packages = with pkgs;
-    [
-      ## fish related
-      fishPlugins.done
-      fishPlugins.fzf-fish
-      #   fishPlugins.forgit
-      fishPlugins.hydro
-      fishPlugins.grc
-      grc
-    ];
+  home.packages = with pkgs; [
+    ## fish related
+    fishPlugins.done
+    fishPlugins.fzf-fish
+    #   fishPlugins.forgit
+    fishPlugins.hydro
+    fishPlugins.grc
+    grc
+  ];
 
 }
-

@@ -42,7 +42,10 @@ let
   # TODO: Will this succeed or throw? Replace null with the result if it succeeds.
   ex3 =
     let
-      x = { a = 1; b = throw "hidden error"; };
+      x = {
+        a = 1;
+        b = throw "hidden error";
+      };
     in
     builtins.seq x x.a;
   # HINT: seq forces x to WHNF (weak head normal form) — for attrsets,
@@ -59,11 +62,12 @@ let
   # ── Exercise 5: Lazy attrset as infinite stream ───────────────────────
 
   # This defines an infinite stream using attrsets (which are lazily evaluated).
-  nats = start: { head = start; tail = nats (start + 1); };
+  nats = start: {
+    head = start;
+    tail = nats (start + 1);
+  };
 
-  take = n: s:
-    if n == 0 then [ ]
-    else [ s.head ] ++ take (n - 1) s.tail;
+  take = n: s: if n == 0 then [ ] else [ s.head ] ++ take (n - 1) s.tail;
 
   # TODO: Use take to get the first 5 natural numbers starting from 0
   first_five = take 5 (nats 0);
@@ -89,6 +93,13 @@ in
   ex2_trace_order = ex2 == 40 && ex2_answer == 40;
   ex3_seq = ex3 == 1 && ex3_answer == 1;
   ex4_deepseq = ex4_succeeds == false;
-  ex5_infinite = first_five == [ 0 1 2 3 4 ];
+  ex5_infinite =
+    first_five == [
+      0
+      1
+      2
+      3
+      4
+    ];
   ex6_lazy_config = banner_value == "Welcome to zeus! Type 'help' for commands.";
 }

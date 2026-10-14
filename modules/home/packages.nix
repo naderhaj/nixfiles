@@ -16,6 +16,7 @@
     pkgs.duf # disk usage
     pkgs.dust # disk usage tree
     pkgs.sd # simpler find & replace
+    pkgs.nixfmt # official nix formatter (RFC 166 style, used by nixpkgs)
     pkgs.lua-language-server
     pkgs.lua
     pkgs.go
@@ -30,10 +31,12 @@
     pkgs.nodejs_24
     pkgs.gh
     pkgs.unstable.opencode
-  ] ++ lib.optionals pkgs.stdenv.isDarwin [
+  ]
+  ++ lib.optionals pkgs.stdenv.isDarwin [
     pkgs.coreutils # provides `dd` with --status=progress
     pkgs.colima # docker daemon (lightweight VM), lower battery use than Docker Desktop
-  ] ++ lib.optionals pkgs.stdenv.isLinux [
+  ]
+  ++ lib.optionals pkgs.stdenv.isLinux [
     pkgs.gdb # gdb doesn't build on macOS, only install on Linux
     pkgs.iputils # provides `ping`, `ifconfig`, ...
     pkgs.libuuid # `uuidgen` (already pre-installed on mac)

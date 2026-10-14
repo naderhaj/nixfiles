@@ -3,7 +3,7 @@ let
   snippetFiles = {
     "global.json" = ./nvim/snippets/global.json;
     "python.json" = ./nvim/snippets/python.json;
-    "go.json"     = ./nvim/snippets/go.json;
+    "go.json" = ./nvim/snippets/go.json;
   };
 in
 {
@@ -42,8 +42,8 @@ in
       };
     };
     btop.enable = true;
-    eza.enable  = true;
-    jq.enable   = true;
+    eza.enable = true;
+    jq.enable = true;
     ripgrep = {
       enable = true;
       arguments = [ "--smart-case" ]; # case-insensitive unless the pattern has uppercase
@@ -52,18 +52,17 @@ in
       enable = true;
       settings.updates.auto_update = true; # download/refresh the example pages automatically
     };
-    ssh.enable  = true;
+    ssh.enable = true;
   };
 
-  home.file = builtins.foldl'
-    (acc: key:
-      acc // {
-        ".config/nvim/snippets/${key}" = {
-          source = builtins.toPath snippetFiles.${key};
-          recursive = true;
-        };
-      }
-    )
-    { }
-    (builtins.attrNames snippetFiles);
+  home.file = builtins.foldl' (
+    acc: key:
+    acc
+    // {
+      ".config/nvim/snippets/${key}" = {
+        source = builtins.toPath snippetFiles.${key};
+        recursive = true;
+      };
+    }
+  ) { } (builtins.attrNames snippetFiles);
 }

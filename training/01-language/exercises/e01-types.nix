@@ -55,11 +55,24 @@ let
   # ── Exercise 4: List operations ───────────────────────────────────────
 
   # TODO: Concatenate [ 1 2 ] and [ 3 4 ]
-  concat = [ 1 2 ] ++ [ 3 4 ];
+  concat = [
+    1
+    2
+  ]
+  ++ [
+    3
+    4
+  ];
   # EXPECTED: [ 1 2 3 4 ]
 
   # TODO: Get the length of [ "a" "b" "c" "d" "e" ]
-  len = builtins.length [ "a" "b" "c" "d" "e" ];
+  len = builtins.length [
+    "a"
+    "b"
+    "c"
+    "d"
+    "e"
+  ];
   # EXPECTED: 5
 
   # ── Exercise 5: Multi-line strings ────────────────────────────────────
@@ -74,18 +87,25 @@ let
 
 in
 {
-  ex1_types = type_of_42 == "int"
+  ex1_types =
+    type_of_42 == "int"
     && type_of_float == "float"
     && type_of_list == "list"
     && type_of_set == "set"
     && type_of_func == "lambda";
 
-  ex2_interpolation = hello_world == "hello world"
-    && answer_string == "The answer is 42";
+  ex2_interpolation = hello_world == "hello world" && answer_string == "The answer is 42";
 
   ex3_division = int_div == 3 && float_div == 3.5;
 
-  ex4_lists = concat == [ 1 2 3 4 ] && len == 5;
+  ex4_lists =
+    concat == [
+      1
+      2
+      3
+      4
+    ]
+    && len == 5;
 
   ex5_multiline = multiline == "line1\nline2\n";
 

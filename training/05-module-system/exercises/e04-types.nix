@@ -4,7 +4,7 @@
 # Explore different types and their merging behavior.
 
 let
-  pkgs = import <nixpkgs> {};
+  pkgs = import <nixpkgs> { };
   lib = pkgs.lib;
 
   # ── Exercise 1: Scalar types don't merge ──────────────────────────────
@@ -28,8 +28,18 @@ let
 
   result2 = lib.evalModules {
     modules = [
-      { options.tags = lib.mkOption { type = lib.types.listOf lib.types.str; default = []; }; }
-      { config.tags = [ "web" "api" ]; }
+      {
+        options.tags = lib.mkOption {
+          type = lib.types.listOf lib.types.str;
+          default = [ ];
+        };
+      }
+      {
+        config.tags = [
+          "web"
+          "api"
+        ];
+      }
       { config.tags = [ "production" ]; }
       { config.tags = [ "monitored" ]; }
     ];
@@ -43,9 +53,24 @@ let
 
   result3 = lib.evalModules {
     modules = [
-      { options.settings = lib.mkOption { type = lib.types.attrsOf lib.types.str; default = {}; }; }
-      { config.settings = { host = "localhost"; port = "8080"; }; }
-      { config.settings = { port = "3000"; debug = "true"; }; }
+      {
+        options.settings = lib.mkOption {
+          type = lib.types.attrsOf lib.types.str;
+          default = { };
+        };
+      }
+      {
+        config.settings = {
+          host = "localhost";
+          port = "8080";
+        };
+      }
+      {
+        config.settings = {
+          port = "3000";
+          debug = "true";
+        };
+      }
     ];
   };
 
@@ -56,9 +81,24 @@ let
 
   result3_fixed = lib.evalModules {
     modules = [
-      { options.settings = lib.mkOption { type = lib.types.attrsOf lib.types.str; default = {}; }; }
-      { config.settings = { host = "localhost"; port = lib.mkDefault "8080"; }; }
-      { config.settings = { port = "3000"; debug = "true"; }; }
+      {
+        options.settings = lib.mkOption {
+          type = lib.types.attrsOf lib.types.str;
+          default = { };
+        };
+      }
+      {
+        config.settings = {
+          host = "localhost";
+          port = lib.mkDefault "8080";
+        };
+      }
+      {
+        config.settings = {
+          port = "3000";
+          debug = "true";
+        };
+      }
     ];
   };
 
@@ -71,7 +111,11 @@ let
     modules = [
       {
         options.theme = lib.mkOption {
-          type = lib.types.enum [ "light" "dark" "auto" ];
+          type = lib.types.enum [
+            "light"
+            "dark"
+            "auto"
+          ];
           default = "auto";
         };
       }
@@ -91,8 +135,14 @@ let
         options.database = lib.mkOption {
           type = lib.types.submodule {
             options = {
-              host = lib.mkOption { type = lib.types.str; default = "localhost"; };
-              port = lib.mkOption { type = lib.types.port; default = 5432; };
+              host = lib.mkOption {
+                type = lib.types.str;
+                default = "localhost";
+              };
+              port = lib.mkOption {
+                type = lib.types.port;
+                default = 5432;
+              };
               name = lib.mkOption { type = lib.types.str; };
             };
           };
@@ -140,15 +190,27 @@ let
   };
 
   # TODO: What are the values?
-  null_value = null;     # What is result6.config.optionalValue?
-  present_value = null;  # What is result6_set.config.optionalValue?
+  null_value = null; # What is result6.config.optionalValue?
+  present_value = null; # What is result6_set.config.optionalValue?
   # EXPECTED: null and "present"
   # HINT: nullOr allows a value to be either null or the inner type
 
-in {
+in
+{
   ex1_priority = name_winner == "from-module-B";
-  ex2_lists = merged_tags == [ "web" "api" "production" "monitored" ];
-  ex3_attrs = merged_settings == { debug = "true"; host = "localhost"; port = "3000"; };
+  ex2_lists =
+    merged_tags == [
+      "web"
+      "api"
+      "production"
+      "monitored"
+    ];
+  ex3_attrs =
+    merged_settings == {
+      debug = "true";
+      host = "localhost";
+      port = "3000";
+    };
   ex4_enum = theme_value == "dark";
   ex5_submodule = db_host == "localhost" && db_port == 3306 && db_name == "myapp";
   ex6_nullor = null_value == null && present_value == "present";

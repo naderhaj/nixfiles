@@ -8,7 +8,13 @@ let
   #
   # This is the magic behind callPackage.
 
-  myFunc = { a, b, c ? 3 }: a + b + c;
+  myFunc =
+    {
+      a,
+      b,
+      c ? 3,
+    }:
+    a + b + c;
 
   # TODO: What does builtins.functionArgs myFunc return?
   funcArgs = null;
@@ -32,17 +38,17 @@ let
   #   1. Get the function's argument names with builtins.functionArgs
   #   2. For each arg, use the override if provided, otherwise look in fakePkgs
   #   3. Call the function with the resolved arguments
-  myCallPackage = fn: overrides:
+  myCallPackage =
+    fn: overrides:
     let
       args = builtins.functionArgs fn;
-      resolved = builtins.mapAttrs
-        (name: _hasDefault:
-          # TODO: if name is in overrides, use override; else use fakePkgs
-          null
-        )
-        args;
+      resolved = builtins.mapAttrs (
+        name: _hasDefault:
+        # TODO: if name is in overrides, use override; else use fakePkgs
+        null
+      ) args;
     in
-      fn resolved;
+    fn resolved;
   # HINT: overrides.${name} or fakePkgs.${name}
 
   # Test functions that simulate package definitions:
@@ -52,10 +58,19 @@ let
     fetcher = fetchurl;
   };
 
-  myPackageB = { stdenv, openssl, zlib }: {
-    name = "pkg-b";
-    deps = [ openssl zlib ];
-  };
+  myPackageB =
+    {
+      stdenv,
+      openssl,
+      zlib,
+    }:
+    {
+      name = "pkg-b";
+      deps = [
+        openssl
+        zlib
+      ];
+    };
 
   # TODO: Call them with myCallPackage
   resultA = null;
@@ -83,13 +98,38 @@ let
   # Set to true when you've tried it
   # EXPECTED: true
 
-in {
-  ex1_functionArgs = funcArgs == { a = false; b = false; c = true; };
+in
+{
+  ex1_functionArgs =
+    funcArgs == {
+      a = false;
+      b = false;
+      c = true;
+    };
 
-  ex2_callPackage = resultA == { name = "pkg-a"; builder = "fake-stdenv"; fetcher = "fake-fetchurl"; }
-                 && resultB == { name = "pkg-b"; deps = [ "fake-openssl" "fake-zlib" ]; };
+  ex2_callPackage =
+    resultA == {
+      name = "pkg-a";
+      builder = "fake-stdenv";
+      fetcher = "fake-fetchurl";
+    }
+    &&
+      resultB == {
+        name = "pkg-b";
+        deps = [
+          "fake-openssl"
+          "fake-zlib"
+        ];
+      };
 
-  ex3_override = resultB_override == { name = "pkg-b"; deps = [ "custom-openssl" "fake-zlib" ]; };
+  ex3_override =
+    resultB_override == {
+      name = "pkg-b";
+      deps = [
+        "custom-openssl"
+        "fake-zlib"
+      ];
+    };
 
   ex4_understood = understood_override == true;
 }

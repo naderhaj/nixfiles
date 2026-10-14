@@ -54,8 +54,7 @@ let
 
 in
 {
-  ex1_types = type_of_string_path == "string"
-    && type_of_path_literal == "path";
+  ex1_types = type_of_string_path == "string" && type_of_path_literal == "path";
 
   ex2_import_func = helper_result == 25;
 
@@ -63,6 +62,5 @@ in
 
   ex4_readdir = helper_type == "regular";
 
-  ex5_paths = log_path == /tmp/logs/app.log
-    && string_concat_type == "string";
+  ex5_paths = log_path == /tmp/logs/app.log && string_concat_type == "string";
 }

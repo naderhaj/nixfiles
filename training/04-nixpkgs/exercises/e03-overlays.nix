@@ -6,16 +6,30 @@
 let
   # A simplified "base package set" (simulating nixpkgs):
   basePkgs = {
-    hello = { pname = "hello"; version = "2.12"; deps = []; };
-    openssl = { pname = "openssl"; version = "3.0"; deps = []; };
-    curl = { pname = "curl"; version = "8.0"; deps = [ basePkgs.openssl ]; };
+    hello = {
+      pname = "hello";
+      version = "2.12";
+      deps = [ ];
+    };
+    openssl = {
+      pname = "openssl";
+      version = "3.0";
+      deps = [ ];
+    };
+    curl = {
+      pname = "curl";
+      version = "8.0";
+      deps = [ basePkgs.openssl ];
+    };
   };
 
   # A simple function to apply overlays (simplified version of nixpkgs' logic):
-  applyOverlay = pkgs: overlay:
+  applyOverlay =
+    pkgs: overlay:
     let
       result = pkgs // overlay result pkgs;
-    in result;
+    in
+    result;
 
   # ── Exercise 1: Add a package via overlay ─────────────────────────────
 
@@ -43,10 +57,14 @@ let
   # This overlay demonstrates the difference:
   overlay3 = final: prev: {
     # Change openssl version
-    openssl = prev.openssl // { version = "3.1"; };
+    openssl = prev.openssl // {
+      version = "3.1";
+    };
 
     # curl should use the NEW openssl (from final, after all overlays)
-    curl = prev.curl // { deps = [ final.openssl ]; };
+    curl = prev.curl // {
+      deps = [ final.openssl ];
+    };
   };
 
   pkgsWithOverlay3 = applyOverlay basePkgs overlay3;
@@ -60,12 +78,20 @@ let
 
   # Overlay A adds a package:
   overlayA = final: prev: {
-    myLib = { pname = "mylib"; version = "1.0"; deps = []; };
+    myLib = {
+      pname = "mylib";
+      version = "1.0";
+      deps = [ ];
+    };
   };
 
   # Overlay B uses the package from A:
   overlayB = final: prev: {
-    myApp = { pname = "myapp"; version = "2.0"; deps = [ final.myLib ]; };
+    myApp = {
+      pname = "myapp";
+      version = "2.0";
+      deps = [ final.myLib ];
+    };
   };
 
   # Apply both overlays in sequence:
@@ -87,15 +113,29 @@ let
   # the overlay IS what defines final.direnv. You need prev to get
   # the version from before this overlay was applied.
 
-in {
-  ex1_add = pkgsWithOverlay1 ? myTool
-         && pkgsWithOverlay1.myTool == { pname = "mytool"; version = "1.0"; deps = []; };
+in
+{
+  ex1_add =
+    pkgsWithOverlay1 ? myTool
+    &&
+      pkgsWithOverlay1.myTool == {
+        pname = "mytool";
+        version = "1.0";
+        deps = [ ];
+      };
 
   ex2_modify = pkgsWithOverlay2.hello.version == "3.0";
 
   ex3_final_prev = curl_openssl_version == "3.1";
 
-  ex4_stack = myapp_deps == [ { pname = "mylib"; version = "1.0"; deps = []; } ];
+  ex4_stack =
+    myapp_deps == [
+      {
+        pname = "mylib";
+        version = "1.0";
+        deps = [ ];
+      }
+    ];
 
   ex5_understood = understood_final_prev == true;
 }

@@ -4,7 +4,7 @@
 # Write a "dev environment" module from scratch.
 
 let
-  pkgs = import <nixpkgs> {};
+  pkgs = import <nixpkgs> { };
   lib = pkgs.lib;
 
   # ── Exercise: Dev Environment Module ──────────────────────────────────
@@ -25,14 +25,21 @@ let
   #   dev.envFile   - a string with the content:
   #     "EDITOR=<editor>\nLANG=<language>\n"
 
-  devModule = { config, lib, ... }:
-    let cfg = config.dev;
-    in {
+  devModule =
+    { config, lib, ... }:
+    let
+      cfg = config.dev;
+    in
+    {
       options.dev = {
         enable = lib.mkEnableOption "development environment";
 
         language = lib.mkOption {
-          type = lib.types.enum [ "python" "go" "rust" ];
+          type = lib.types.enum [
+            "python"
+            "go"
+            "rust"
+          ];
           description = "Primary development language.";
         };
 
@@ -43,13 +50,13 @@ let
 
         extraPackages = lib.mkOption {
           type = lib.types.listOf lib.types.str;
-          default = [];
+          default = [ ];
         };
 
         # These are "output" options — set by the module itself:
         packages = lib.mkOption {
           type = lib.types.listOf lib.types.str;
-          default = [];
+          default = [ ];
           description = "Computed list of packages.";
         };
 
@@ -107,13 +114,23 @@ let
     ];
   };
 
-in {
-  python_packages = testPython.config.dev.packages == [ "python3" "pip" "black" ];
+in
+{
+  python_packages =
+    testPython.config.dev.packages == [
+      "python3"
+      "pip"
+      "black"
+    ];
   python_env = testPython.config.dev.envFile == "EDITOR=nvim\nLANG=python\n";
 
-  go_packages = testGo.config.dev.packages == [ "go" "gopls" ];
+  go_packages =
+    testGo.config.dev.packages == [
+      "go"
+      "gopls"
+    ];
   go_env = testGo.config.dev.envFile == "EDITOR=code\nLANG=go\n";
 
-  disabled_packages = testDisabled.config.dev.packages == [];
+  disabled_packages = testDisabled.config.dev.packages == [ ];
   disabled_env = testDisabled.config.dev.envFile == "";
 }

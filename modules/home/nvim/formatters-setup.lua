@@ -24,7 +24,7 @@ require("conform").setup({
     markdown = { "prettier" },
     typescript = { "prettier" },
     javascript = { "prettier" },
-    nix = { "nixpkgs-fmt" },
+    nix = { "nixfmt" },
     -- For filetypes without an explicit formatter, fall back to LSP
     go = { lsp_format = "prefer" },
     typescriptreact = { "prettier" },
@@ -45,8 +45,8 @@ require("conform").setup({
     prettier = {
       command = paths.prettier,
     },
-    ["nixpkgs-fmt"] = {
-      command = paths.nixpkgs_fmt,
+    nixfmt = {
+      command = paths.nixfmt,
     },
   },
 })

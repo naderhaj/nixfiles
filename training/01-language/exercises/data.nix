@@ -3,5 +3,8 @@
 {
   greeting = "hello from data.nix";
   version = 1;
-  tags = [ "training" "nix" ];
+  tags = [
+    "training"
+    "nix"
+  ];
 }

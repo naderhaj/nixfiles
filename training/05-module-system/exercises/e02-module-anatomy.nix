@@ -4,7 +4,7 @@
 # Explore module structure and the config/options split.
 
 let
-  pkgs = import <nixpkgs> {};
+  pkgs = import <nixpkgs> { };
   lib = pkgs.lib;
 
   # ── Exercise 1: Implicit vs explicit config ───────────────────────────
@@ -49,9 +49,12 @@ let
   # - Declares options.services.greeter.name (str, default "World")
   # - When enabled, sets options.services.greeter.message to "Hello, {name}!"
 
-  greeterModule = { config, lib, ... }:
-    let cfg = config.services.greeter;
-    in {
+  greeterModule =
+    { config, lib, ... }:
+    let
+      cfg = config.services.greeter;
+    in
+    {
       options.services.greeter = {
         enable = lib.mkEnableOption "greeter service";
         name = lib.mkOption {
@@ -73,7 +76,10 @@ let
   testGreeterEnabled = lib.evalModules {
     modules = [
       greeterModule
-      { config.services.greeter.enable = true; config.services.greeter.name = "Nader"; }
+      {
+        config.services.greeter.enable = true;
+        config.services.greeter.name = "Nader";
+      }
     ];
   };
 
@@ -109,7 +115,10 @@ let
   };
 
   testInterModule = lib.evalModules {
-    modules = [ moduleA moduleB ];
+    modules = [
+      moduleA
+      moduleB
+    ];
   };
 
   # TODO: What is client.serverUrl when server.port is default (8080)?
@@ -118,18 +127,22 @@ let
 
   # TODO: What if we override the port?
   testInterModule2 = lib.evalModules {
-    modules = [ moduleA moduleB { config.server.port = 3000; } ];
+    modules = [
+      moduleA
+      moduleB
+      { config.server.port = 3000; }
+    ];
   };
 
   server_url_custom = null;
   # EXPECTED: "http://localhost:3000"
 
-in {
+in
+{
   ex1_implicit_explicit = implicit_value == "value" && explicit_value == "value";
 
-  ex2_greeter = greeter_enabled_msg == "Hello, Nader!"
-             && greeter_disabled_msg == "";
+  ex2_greeter = greeter_enabled_msg == "Hello, Nader!" && greeter_disabled_msg == "";
 
-  ex3_inter_module = server_url == "http://localhost:8080"
-                  && server_url_custom == "http://localhost:3000";
+  ex3_inter_module =
+    server_url == "http://localhost:8080" && server_url_custom == "http://localhost:3000";
 }

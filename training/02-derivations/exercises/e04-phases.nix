@@ -6,7 +6,9 @@
 #   nix build -f training/02-derivations/exercises/e04-phases.nix \
 #     --arg pkgs 'import <nixpkgs> {}' -L
 
-{ pkgs ? import <nixpkgs> {} }:
+{
+  pkgs ? import <nixpkgs> { },
+}:
 
 let
   # ── Exercise 1: Phase observer ────────────────────────────────────────
@@ -21,24 +23,24 @@ let
     src = builtins.path {
       path = ./.;
       name = "phase-src";
-      filter = path: type: false;  # include nothing — empty dir
+      filter = path: type: false; # include nothing — empty dir
     };
 
     dontConfigure = true;
 
-    postUnpack    = ''echo "📦 postUnpack: source extracted to $sourceRoot"'';
-    postPatch     = ''echo "🩹 postPatch: patches applied (none in this case)"'';
-    preBuild      = ''echo "🔨 preBuild: about to build..."'';
-    buildPhase    = ''echo "🔨 buildPhase: building... (nothing to compile)"'';
-    postBuild     = ''echo "🔨 postBuild: build complete"'';
-    preInstall    = ''echo "📥 preInstall: about to install..."'';
-    installPhase  = ''
+    postUnpack = ''echo "📦 postUnpack: source extracted to $sourceRoot"'';
+    postPatch = ''echo "🩹 postPatch: patches applied (none in this case)"'';
+    preBuild = ''echo "🔨 preBuild: about to build..."'';
+    buildPhase = ''echo "🔨 buildPhase: building... (nothing to compile)"'';
+    postBuild = ''echo "🔨 postBuild: build complete"'';
+    preInstall = ''echo "📥 preInstall: about to install..."'';
+    installPhase = ''
       echo "📥 installPhase: installing..."
       mkdir -p $out
       echo "phase-observer built successfully" > $out/result.txt
     '';
-    postInstall   = ''echo "📥 postInstall: install complete"'';
-    postFixup     = ''echo "🔧 postFixup: fixup complete (shebangs patched, etc.)"'';
+    postInstall = ''echo "📥 postInstall: install complete"'';
+    postFixup = ''echo "🔧 postFixup: fixup complete (shebangs patched, etc.)"'';
   };
 
   # ── Exercise 2: postInstall wrapper ───────────────────────────────────
@@ -107,7 +109,7 @@ let
   };
 
 in
-  # Change this to test different exercises:
-  phase-observer
-  # script-with-docs
-  # patched-config
+# Change this to test different exercises:
+phase-observer
+# script-with-docs
+# patched-config

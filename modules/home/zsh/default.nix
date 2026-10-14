@@ -1,4 +1,10 @@
-{ pkgs, lib, config, machine, ... }:
+{
+  pkgs,
+  lib,
+  config,
+  machine,
+  ...
+}:
 {
 
   # Multi-shell, multi-command completion engine: provides zsh completions for
@@ -50,8 +56,14 @@
     # type a prefix, then ↑/↓ cycles through history entries containing it
     historySubstringSearch = {
       enable = true;
-      searchUpKey = [ "^[[A" "^[OA" ];
-      searchDownKey = [ "^[[B" "^[OB" ];
+      searchUpKey = [
+        "^[[A"
+        "^[OA"
+      ];
+      searchDownKey = [
+        "^[[B"
+        "^[OB"
+      ];
     };
 
     shellAliases = {

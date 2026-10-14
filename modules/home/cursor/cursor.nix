@@ -8,8 +8,7 @@ let
   # 0mg6byzhadh6k8jrbnns8p7g66x34vwvb5h46kk7fmmjc8cg27v4
   # nix hash convert --hash-algo sha256 0mg6byzhadh6k8jrbnns8p7g66x34vwvb5h46kk7fmmjc8cg27v4
   src = pkgs.fetchurl {
-    url =
-      "https://api2.cursor.sh/updates/download/golden/linux-x64/cursor/1.7";
+    url = "https://api2.cursor.sh/updates/download/golden/linux-x64/cursor/1.7";
     hash = "sha256-ZB/xGGKyVnfmNASWtfkmoxvzzkXa2pUlmgY2Bb9f5lU=";
   };
   appimageContents = pkgs.appimageTools.extract { inherit pname version src; };
@@ -48,4 +47,3 @@ appimageTools.wrapType2 {
     })
   ];
 }
-
