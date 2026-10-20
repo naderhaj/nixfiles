@@ -8,11 +8,14 @@ vim.cmd([[
 ]])
 
 function SetupRustMappings()
-	local opts = { noremap = true, silent = true }
-	vim.keymap.set("n", "<leader>rr", "<cmd>RustLsp runnables<CR>", opts)
-	vim.keymap.set("n", "<leader>re", "<cmd>RustLsp expandMacro<CR>", opts)
-	vim.keymap.set("n", "<leader>rc", "<cmd>RustLsp openCargo<CR>", opts)
-	vim.keymap.set("n", "<leader>rd", "<cmd>RustLsp debuggables<CR>", opts)
+	local function opts(desc)
+		return { noremap = true, silent = true, buffer = true, desc = desc }
+	end
+	require("which-key").add({ { "<leader>r", group = "rust", buffer = 0 } })
+	vim.keymap.set("n", "<leader>rr", "<cmd>RustLsp runnables<CR>", opts("runnables"))
+	vim.keymap.set("n", "<leader>re", "<cmd>RustLsp expandMacro<CR>", opts("expand macro"))
+	vim.keymap.set("n", "<leader>rc", "<cmd>RustLsp openCargo<CR>", opts("open Cargo.toml"))
+	vim.keymap.set("n", "<leader>rd", "<cmd>RustLsp debuggables<CR>", opts("debuggables"))
 end
 
 vim.cmd([[

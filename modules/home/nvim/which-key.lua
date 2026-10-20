@@ -38,3 +38,6 @@ wk.add({ mode = "n", { "<leader>s", group = "substitute" } })
 
 -- t tree
 wk.add({ mode = "n", { "<leader>t", group = "tree" } })
+
+-- o octo (GitHub PRs)
+wk.add({ mode = "n", { "<leader>o", group = "octo" } })

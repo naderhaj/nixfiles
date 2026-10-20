@@ -7,6 +7,9 @@ require('glow').setup({
   width = 120,
 })
 
-vim.cmd [[
-    autocmd FileType markdown noremap <leader>p :Glow<CR>
-  ]]
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  callback = function(args)
+    vim.keymap.set("n", "<leader>mp", "<cmd>Glow<CR>", { buffer = args.buf, desc = "preview (glow)" })
+  end,
+})

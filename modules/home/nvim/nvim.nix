@@ -120,6 +120,8 @@
       nvim-neoclip-lua
       # git
       vim-fugitive
+      # github PR review
+      octo-nvim
       # db
       vim-dadbod
       vim-dadbod-ui
@@ -143,6 +145,7 @@
       (builtins.readFile ./trouble.lua)
       (builtins.readFile ./gitsigns.lua)
       (builtins.readFile ./fugitive.lua)
+      (builtins.readFile ./octo.lua)
       (builtins.readFile ./notify.lua)
       (builtins.readFile ./autopairs.lua)
       (builtins.readFile ./statusline.lua)
