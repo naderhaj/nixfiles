@@ -407,6 +407,16 @@ vim.lsp.config["helm_ls"] = {
 }
 vim.lsp.enable("helm_ls")
 
+-- Terraform Config
+vim.lsp.config["terraformls"] = {
+	capabilities = capabilities,
+	on_attach = attach_keymaps,
+	cmd = { paths.terraform_ls, "serve" },
+	filetypes = { "terraform", "terraform-vars" },
+	root_markers = { ".terraform", ".git" },
+}
+vim.lsp.enable("terraformls")
+
 require("telescope").load_extension("ui-select")
 
 -- Display number of folded lines

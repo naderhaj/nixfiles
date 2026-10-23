@@ -17,6 +17,7 @@
       jdtls = "${pkgs.jdt-language-server}/bin/jdtls",
       yaml_language_server = "${pkgs.yaml-language-server}/bin/yaml-language-server",
       helm_ls = "${pkgs.helm-ls}/bin/helm_ls",
+      terraform_ls = "${pkgs.terraform-ls}/bin/terraform-ls",
 
       -- Formatters
       ruff = "${pkgs.ruff}/bin/ruff",
