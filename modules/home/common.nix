@@ -1,4 +1,9 @@
-{ config, inputs, ... }:
+{
+  config,
+  pkgs,
+  inputs,
+  ...
+}:
 let
   snippetFiles = {
     "global.json" = ./nvim/snippets/global.json;
@@ -54,6 +59,10 @@ in
     };
     ssh.enable = true;
   };
+
+  home.packages = [
+    pkgs.unstable.uv
+  ];
 
   home.file = builtins.foldl' (
     acc: key:
