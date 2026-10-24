@@ -197,7 +197,7 @@ vim.opt_global.shortmess:remove("F")
 
 vim.cmd([[augroup lsp]])
 vim.cmd([[autocmd!]])
-vim.cmd([[autocmd FileType scala,sbt lua require('metals').initialize_or_attach(metals_config)]])
+vim.cmd([[autocmd FileType scala,sbt lua metals_config.settings.javaHome = vim.env.JAVA_HOME; require('metals').initialize_or_attach(metals_config)]])
 vim.cmd([[augroup end]])
 
 -- TS config
