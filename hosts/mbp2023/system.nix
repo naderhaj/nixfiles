@@ -24,6 +24,9 @@
       "flakes"
     ];
     trusted-users = [ "naderh" ];
+    # When free space drops below 10 GiB during a build, collect garbage until 30 GiB is free
+    min-free = 10 * 1024 * 1024 * 1024;
+    max-free = 30 * 1024 * 1024 * 1024;
   };
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
 
@@ -35,9 +38,16 @@
       Hour = 0;
       Minute = 0;
     };
-    options = "--delete-older-than 1w";
+    # nix-collect-garbage only accepts days ("1w" makes it exit with an error)
+    options = "--delete-older-than 7d";
   };
   nix.optimise.automatic = true;
+
+  # Log GC runs so failures are not silent
+  launchd.daemons.nix-gc.serviceConfig = {
+    StandardOutPath = "/var/log/nix-gc.log";
+    StandardErrorPath = "/var/log/nix-gc.log";
+  };
 
   programs = {
     zsh.enable = true;

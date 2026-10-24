@@ -114,7 +114,12 @@
 
   nix = {
 
-    settings.auto-optimise-store = true;
+    settings = {
+      auto-optimise-store = true;
+      # When free space drops below 10 GiB during a build, collect garbage until 30 GiB is free
+      min-free = 10 * 1024 * 1024 * 1024;
+      max-free = 30 * 1024 * 1024 * 1024;
+    };
 
     extraOptions = ''
       # needed for nix-direnv
