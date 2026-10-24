@@ -9,7 +9,7 @@
       basedpyright = "${pkgs.basedpyright}/bin/basedpyright-langserver",
       nil_ls = "${pkgs.nil}/bin/nil",
       nixfmt = "${pkgs.nixfmt}/bin/nixfmt",
-      metals = "${pkgs.metals}/bin/metals",
+      metals = "${pkgs.unstable.metals}/bin/metals",
       typescript_language_server = "${pkgs.typescript-language-server}/bin/typescript-language-server",
       html_language_server = "${pkgs.vscode-langservers-extracted}/bin/vscode-html-language-server",
       clangd = "${pkgs.llvmPackages_19.clang-tools}/bin/clangd",

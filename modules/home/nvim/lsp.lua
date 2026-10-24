@@ -168,8 +168,8 @@ metals_config.on_attach = function(client, bufnr)
 			function() require("metals").toggle_setting("showImplicitArguments") end,
 			desc = "toggle implicit args",
 		},
-		{ "<leader>lmw", function() require("metals").worksheet_hover() end, desc = "worksheet hover" },
-		{ "<leader>lmd", function() require("metals").open_all_diagnostics() end, desc = "all diagnostics" },
+		{ "<leader>lmw", function() require("metals").hover_worksheet() end, desc = "worksheet hover" },
+		{ "<leader>lmd", function() vim.diagnostic.setqflist() end, desc = "all diagnostics" },
 	})
 end
 
