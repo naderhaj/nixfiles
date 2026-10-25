@@ -6,7 +6,7 @@ Nix flakes configuration managing system and home environments across multiple m
 |------|----------|------|
 | `mbp2023` | macOS (Apple Silicon) | nix-darwin + home-manager |
 | `zeus` | NixOS (x86_64) | NixOS + home-manager |
-| `vizzia` | NixOS (Framework 13, AMD 7040) | NixOS + home-manager |
+
 
 ## Structure
 
