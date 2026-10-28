@@ -39,6 +39,7 @@
       # core
       telescope-nvim
       telescope-ui-select-nvim
+      telescope-fzf-native-nvim # fzf sorter: 'exact ^prefix suffix$ !negate
       nui-nvim
       nvim-surround
       which-key-nvim

@@ -321,3 +321,44 @@ local function tabs_picker(opts)
 end
 
 vim.keymap.set("n", "<leader>fT", tabs_picker, { desc = "Tabs" })
+
+-- fzf-native sorter for every picker: 'exact  ^prefix  suffix$  !negate  a | b
+-- pcall so this file can be :luafile'd before the plugin is installed.
+pcall(require("telescope").load_extension, "fzf")
+
+local builtin = require("telescope.builtin")
+vim.keymap.set("n", "<leader>fr", builtin.resume, { desc = "Resume last picker" })
+
+-- Grep the word under the cursor, or the selection in any visual mode.
+-- builtin.grep_string alone only reads charwise `v` selections, and it
+-- regex-escapes the text (`.` -> `\.`), which then matches nothing because
+-- vimgrep_arguments above uses --fixed-strings. use_regex = true skips the
+-- escaping; --fixed-strings still makes the search literal.
+local function grep_word_or_selection()
+  local text
+  local mode = vim.fn.mode()
+  if mode == "v" or mode == "V" or mode == "\22" then
+    local lines = vim.fn.getregion(vim.fn.getpos("v"), vim.fn.getpos("."), { type = mode })
+    lines = vim.tbl_filter(function(l)
+      return vim.trim(l) ~= ""
+    end, lines)
+    -- rg matches one line at a time, so a multi-line selection uses its first line
+    if #lines > 1 then
+      vim.notify("Grep: multi-line selection, searching its first line", vim.log.levels.INFO)
+    end
+    text = vim.trim(lines[1] or "")
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "nx", false)
+  else
+    text = vim.fn.expand("<cword>")
+  end
+  if text == "" then
+    return
+  end
+  builtin.grep_string({ search = text, use_regex = true })
+end
+vim.keymap.set({ "n", "x" }, "<leader>fw", grep_word_or_selection, { desc = "Grep word / selection" })
+vim.keymap.set("n", "<leader>fo", builtin.oldfiles, { desc = "Recent files" })
+vim.keymap.set("n", "<leader>/", builtin.current_buffer_fuzzy_find, { desc = "Fuzzy find in buffer" })
+vim.keymap.set("n", "<leader>fk", builtin.keymaps, { desc = "Keymaps" })
+-- Visual: commits touching the selected lines. Normal: commits touching the current line.
+vim.keymap.set({ "n", "x" }, "<leader>gL", builtin.git_bcommits_range, { desc = "Commits touching line / selection" })
