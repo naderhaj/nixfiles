@@ -249,3 +249,75 @@ local live_multigrep = function(opts)
 end
 
 vim.keymap.set("n", "<leader>fm", live_multigrep, { desc = "Multi Grep (rg with pattern)" })
+
+-- Tab picker (no builtin exists): one entry per tab page listing its files.
+-- <CR> jumps to the tab, <C-d> closes it.
+local function tab_entries()
+  local results = {}
+  for nr, tab in ipairs(vim.api.nvim_list_tabpages()) do
+    local names = {}
+    for _, win in ipairs(vim.api.nvim_tabpage_list_wins(tab)) do
+      -- skip floats (notifications, telescope itself)
+      if vim.api.nvim_win_get_config(win).relative == "" then
+        local name = vim.api.nvim_buf_get_name(vim.api.nvim_win_get_buf(win))
+        -- fugitive:///repo/.git//<sha>/path -> path @ <short sha>
+        local sha, path = name:match("^fugitive://.-//(%x+)/(.*)$")
+        name = sha and (path .. " @" .. sha:sub(1, 7)) or vim.fn.fnamemodify(name, ":~:.")
+        table.insert(names, name ~= "" and name or "[No Name]")
+      end
+    end
+    local current = tab == vim.api.nvim_get_current_tabpage() and "%" or " "
+    table.insert(results, { nr = nr, tab = tab, text = ("%s %d: %s"):format(current, nr, table.concat(names, "  |  ")) })
+  end
+  return results
+end
+
+local function tabs_picker(opts)
+  opts = opts or {}
+  local actions = require("telescope.actions")
+  local action_state = require("telescope.actions.state")
+  local new_finder = function()
+    return finders.new_table({
+      results = tab_entries(),
+      entry_maker = function(e)
+        return { value = e, display = e.text, ordinal = e.text }
+      end,
+    })
+  end
+
+  pickers
+    .new(opts, {
+      prompt_title = "Tabs",
+      finder = new_finder(),
+      sorter = conf.generic_sorter(opts),
+      attach_mappings = function(prompt_bufnr, map)
+        actions.select_default:replace(function()
+          local entry = action_state.get_selected_entry()
+          actions.close(prompt_bufnr)
+          if entry and vim.api.nvim_tabpage_is_valid(entry.value.tab) then
+            vim.api.nvim_set_current_tabpage(entry.value.tab)
+          end
+        end)
+        local close_tab = function()
+          local entry = action_state.get_selected_entry()
+          if not entry or #vim.api.nvim_list_tabpages() == 1 then
+            return
+          end
+          local nr = vim.api.nvim_tabpage_get_number(entry.value.tab)
+          if entry.value.tab == vim.api.nvim_get_current_tabpage() then
+            -- the picker's own windows live in this tab; close it first
+            actions.close(prompt_bufnr)
+            vim.cmd.tabclose(nr)
+            return
+          end
+          vim.cmd.tabclose(nr)
+          action_state.get_current_picker(prompt_bufnr):refresh(new_finder(), { reset_prompt = false })
+        end
+        map({ "i", "n" }, "<C-d>", close_tab)
+        return true
+      end,
+    })
+    :find()
+end
+
+vim.keymap.set("n", "<leader>fT", tabs_picker, { desc = "Tabs" })
