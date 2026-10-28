@@ -162,6 +162,7 @@
       (builtins.readFile ./markdown.lua)
       (builtins.readFile ./blink-highlight.lua)
       (builtins.readFile ./glow-setup.lua)
+      (builtins.readFile ./dadbod.lua)
     ];
   };
 
