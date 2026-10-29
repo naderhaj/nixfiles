@@ -1,4 +1,4 @@
-.PHONY: mbp-switch mbp-build ondorse-switch ondorse-build zeus-switch zeus-build check update gc generations
+.PHONY: mbp-switch mbp-build ondorse-switch ondorse-build zeus-switch zeus-build check nvim-test update gc generations
 
 # Build and switch macOS (Darwin) configuration
 mbp-switch:
@@ -27,6 +27,10 @@ zeus-build:
 # Check flake evaluates without errors
 check:
 	nix flake check
+
+# Headless Neovim smoke test (HOST=mbp2023|ondorse|zeus)
+nvim-test:
+	./scripts/nvim-test.sh $(or $(HOST),mbp2023)
 
 # Update all flake inputs
 update:
