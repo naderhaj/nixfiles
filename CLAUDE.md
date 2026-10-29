@@ -153,12 +153,14 @@ After any input update, run `make mbp-build` to verify the macOS config still ev
 ### CI and automated updates
 
 - `.github/workflows/build.yml` builds each host on a native runner (zeus on Linux, the
-  Macs on macOS), runs `make nvim-test`, and on PRs writes an `nvd` package diff to the job
-  summary. Builds go through the `naderhaj` Cachix cache. The `zeus`, `mbp2023` and
+  Macs on macOS), runs `make nvim-test`, and on PRs posts the `nvd` package diff of all
+  three hosts as one PR comment, edited in place on each push. Builds go through the `naderhaj` Cachix cache. The `zeus`, `mbp2023` and
   `ondorse` checks are required on `main`.
 - `update-flake-lock.yml` opens a weekly `flake.lock: update` PR (branch `flake-update`)
   and dispatches `build.yml` on it, since PRs pushed with `GITHUB_TOKEN` don't trigger
-  workflows. Review the package diff and merge by hand.
+  workflows. Review the package diff and merge by hand. The same workflow opens an issue
+  (once per release) when a newer `nixos-YY.MM` branch exists, since lock updates never
+  leave the branch named in `flake.nix`.
 - Renovate (`renovate.json`) only bumps the SHA-pinned GitHub Actions, waits 14 days after
   a release, and automerges once the checks pass.
 

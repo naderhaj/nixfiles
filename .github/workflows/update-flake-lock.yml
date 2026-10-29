@@ -9,6 +9,7 @@ permissions:
   contents: write
   pull-requests: write
   actions: write # to start the build on the PR branch
+  issues: write # for the new-release reminder
 
 jobs:
   update:
@@ -35,3 +36,40 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run build.yml --ref flake-update
+
+      # flake.lock updates never leave the release branch named in flake.nix,
+      # so moving to the next NixOS release is manual. Open an issue (once per
+      # release) when a newer nixos-YY.MM branch exists.
+      - name: Check for a newer NixOS release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          latest_branch() {
+            git ls-remote --heads "https://github.com/$1" "refs/heads/$2*" |
+              grep -oE "$2[0-9]{2}\.[0-9]{2}$" | sort -V | tail -1
+          }
+          current="$(grep -oE 'nixos-[0-9]{2}\.[0-9]{2}' flake.nix | head -1)"
+          latest="$(latest_branch NixOS/nixpkgs nixos-)"
+          [ "$latest" != "$current" ] || exit 0
+
+          release="${latest#nixos-}"
+          title="NixOS $release is available"
+          if [ -n "$(gh issue list --state all --search "in:title \"$title\"" --json number --jq '.[0].number // empty')" ]; then
+            exit 0
+          fi
+          gh issue create --title "$title" --body-file - <<EOF
+          The \`$latest\` branch exists; \`flake.nix\` is on \`$current\`. A new branch
+          can appear a few weeks before the release (beta). \`$current\` keeps getting
+          fixes for about a month after $release ships, then stops.
+
+          Latest branches today:
+          - nixpkgs: \`$latest\`
+          - home-manager: \`$(latest_branch nix-community/home-manager release-)\`
+          - nix-darwin: \`$(latest_branch nix-darwin/nix-darwin nix-darwin-)\`
+
+          To upgrade, once all three have a $release branch:
+          1. In \`flake.nix\`, move \`nixpkgs\`, \`home-manager\` and \`darwin\` to their $release branches together.
+          2. \`nix flake update nixpkgs home-manager darwin\`, open a PR and fix what the
+             [release notes](https://nixos.org/manual/nixos/stable/release-notes) broke.
+          3. Leave \`stateVersion\` alone.
+          EOF
