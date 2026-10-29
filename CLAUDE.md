@@ -190,6 +190,11 @@ instead, e.g. `nix eval .#darwinConfigurations.mbp2023.config.fonts.packages`.
   `~/projects/nixfiles/modules/home/nvim/lua`: editing an existing module takes effect on
   nvim restart, no rebuild. `init.lua`, plugins and tools still need a switch. Because the Lua
   is not in the store, a generation rollback does not roll it back — use git.
+- `make nvim-test` (`HOST=mbp2023|ondorse|zeus`, also run in CI) starts the host's nvim
+  headless and checks: every `lua/config/` module is required by `init.lua`, no startup
+  errors, LSP/formatter binaries are on PATH, treesitter parsers load, and the LSP servers
+  attach, highlighting starts and the formatters run on a sample file per language
+  (`modules/home/nvim/test/smoke.lua`).
 - LSP servers, formatters and CLI tools go in `programs.neovim.extraPackages` (on nvim's PATH
   only, appended so a project dev shell's version wins); Lua refers to them by bare command
   name. The one Nix-interpolated value is `vim.g.nix_metals_path`, prepended to `init.lua`

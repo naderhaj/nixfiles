@@ -61,6 +61,9 @@ jobs:
       - name: Build
         run: nix build ".#${{ matrix.attr }}" --out-link result-new
 
+      - name: Neovim smoke test
+        run: ./scripts/nvim-test.sh ${{ matrix.host }}
+
       - name: Build PR base
         id: base
         if: github.event_name == 'pull_request'
