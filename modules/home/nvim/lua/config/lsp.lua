@@ -1,5 +1,3 @@
-local paths = require("nix-paths")
-
 vim.cmd([[
   augroup RustMappings
   autocmd!
@@ -76,7 +74,7 @@ vim.g.rustaceanvim = {
 	server = {
 		capabilities = capabilities,
 		on_attach = attach_keymaps,
-		cmd = { paths.rust_analyzer },
+		cmd = { "rust-analyzer" },
 		default_settings = {
 			["rust-analyzer"] = {
 				experimental = {
@@ -94,7 +92,7 @@ require("crates").setup({ lsp = { enabled = true, completion = true, actions = t
 vim.lsp.config["basedpyright"] = {
 	capabilities = capabilities,
 	on_attach = attach_keymaps,
-	cmd = { paths.basedpyright, "--stdio" },
+	cmd = { "basedpyright-langserver", "--stdio" },
 	filetypes = { "python" },
 	-- root_markers = { "pyrightconfig.json", "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" },
 	-- settings = {
@@ -119,7 +117,7 @@ vim.lsp.config["ruff"] = {
 		-- leave hover to basedpyright, which has the type information
 		client.server_capabilities.hoverProvider = false
 	end,
-	cmd = { paths.ruff, "server" },
+	cmd = { "ruff", "server" },
 	filetypes = { "python" },
 	root_markers = { "pyproject.toml", "ruff.toml", ".ruff.toml", ".git" },
 }
@@ -134,7 +132,7 @@ vim.lsp.config["nil_ls"] = {
 	settings = {
 		["nil"] = {
 			formatting = {
-				command = { paths.nixfmt },
+				command = { "nixfmt" },
 			},
 			diagnostics = {
 				ignored = { "uri_literal" },
@@ -149,7 +147,7 @@ vim.lsp.config["nil_ls"] = {
 			},
 		},
 	},
-	cmd = { paths.nil_ls },
+	cmd = { "nil" },
 }
 vim.lsp.enable("nil_ls")
 
@@ -174,7 +172,7 @@ metals_config.on_attach = function(client, bufnr)
 end
 
 metals_config.settings = {
-	metalsBinaryPath = paths.metals,
+	metalsBinaryPath = vim.g.nix_metals_path,
 	showImplicitArguments = true,
 	showImplicitConversionsAndClasses = true,
 	showInferredType = true,
@@ -205,7 +203,7 @@ vim.lsp.config["ts_ls"] = {
 	capabilities = capabilities,
 	on_attach = attach_keymaps,
 	filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact" },
-	cmd = { paths.typescript_language_server, "--stdio" },
+	cmd = { "typescript-language-server", "--stdio" },
 	root_markers = { "tsconfig.json", "jsconfig.json", "package.json", ".git" },
 	-- ts_ls only sends inlay hints when asked to
 	settings = (function()
@@ -227,7 +225,7 @@ vim.lsp.config["html"] = {
 	capabilities = capabilities,
 	on_attach = attach_keymaps,
 	filetypes = { "html" },
-	cmd = { paths.html_language_server, "--stdio" },
+	cmd = { "vscode-html-language-server", "--stdio" },
 	root_markers = { "package.json", ".git" },
 }
 vim.lsp.enable("html")
@@ -237,7 +235,7 @@ vim.lsp.config["clangd"] = {
 	capabilities = capabilities,
 	on_attach = attach_keymaps,
 	filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
-	cmd = { paths.clangd, "--offset-encoding=utf-16" },
+	cmd = { "clangd", "--offset-encoding=utf-16" },
 	root_markers = { ".clangd", "compile_commands.json", "compile_flags.txt", ".git" },
 }
 vim.lsp.enable("clangd")
@@ -247,7 +245,7 @@ vim.lsp.config["gopls"] = {
 	capabilities = capabilities,
 	on_attach = attach_keymaps,
 	filetypes = { "go", "gomod", "gowork", "gotmpl" },
-	cmd = { paths.gopls, "serve" },
+	cmd = { "gopls", "serve" },
 	root_markers = { "go.mod", "go.work", ".git" },
 	-- gopls only sends inlay hints when asked to
 	settings = {
@@ -298,7 +296,7 @@ vim.lsp.config["jdtls"] = {
 	capabilities = capabilities,
 	on_attach = attach_keymaps,
 	filetypes = { "java" },
-	cmd = { paths.jdtls },
+	cmd = { "jdtls" },
 	root_markers = { "build.gradle", "pom.xml", "settings.gradle", ".git" },
 	settings = {
 		java = {
@@ -377,7 +375,7 @@ vim.lsp.config["yamlls"] = {
 			client:notify("workspace/didChangeConfiguration", { settings = client.settings })
 		end
 	end,
-	cmd = { paths.yaml_language_server, "--stdio" },
+	cmd = { "yaml-language-server", "--stdio" },
 	filetypes = { "yaml", "yaml.docker-compose" },
 	root_markers = { ".git" },
 	settings = {
@@ -395,13 +393,13 @@ vim.lsp.enable("yamlls")
 vim.lsp.config["helm_ls"] = {
 	capabilities = capabilities,
 	on_attach = attach_keymaps,
-	cmd = { paths.helm_ls, "serve" },
+	cmd = { "helm_ls", "serve" },
 	filetypes = { "helm" },
 	root_markers = { "Chart.yaml" },
 	settings = {
 		["helm-ls"] = {
 			-- helm-ls runs yaml-language-server internally for the YAML parts of templates
-			yamlls = { path = paths.yaml_language_server },
+			yamlls = { path = "yaml-language-server" },
 		},
 	},
 }
@@ -411,7 +409,7 @@ vim.lsp.enable("helm_ls")
 vim.lsp.config["terraformls"] = {
 	capabilities = capabilities,
 	on_attach = attach_keymaps,
-	cmd = { paths.terraform_ls, "serve" },
+	cmd = { "terraform-ls", "serve" },
 	filetypes = { "terraform", "terraform-vars" },
 	root_markers = { ".terraform", ".git" },
 }

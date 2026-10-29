@@ -183,8 +183,17 @@ instead, e.g. `nix eval .#darwinConfigurations.mbp2023.config.fonts.packages`.
 ### Neovim Configuration
 - Comprehensive Neovim setup in `modules/home/nvim/`
 - Uses both stable and unstable packages for different plugins
-- Lua configuration files are embedded directly in the Nix configuration
-- LSP, formatters, and telescope configurations are modularized
+- Lua modules live in `modules/home/nvim/lua/config/`, each loaded by `init.lua` via
+  `require("config.<name>")` and running in its own scope. A new module must be added to
+  `init.lua`.
+- `~/.config/nvim/lua` is an out-of-store symlink to the checkout at
+  `~/projects/nixfiles/modules/home/nvim/lua`: editing an existing module takes effect on
+  nvim restart, no rebuild. `init.lua`, plugins and tools still need a switch. Because the Lua
+  is not in the store, a generation rollback does not roll it back — use git.
+- LSP servers, formatters and CLI tools go in `programs.neovim.extraPackages` (on nvim's PATH
+  only, appended so a project dev shell's version wins); Lua refers to them by bare command
+  name. The one Nix-interpolated value is `vim.g.nix_metals_path`, prepended to `init.lua`
+  in `nvim.nix`.
 
 ### Firefox
 - `modules/home/firefox.nix` declares the profile and add-ons, imported by `home/ondorse.nix` only.

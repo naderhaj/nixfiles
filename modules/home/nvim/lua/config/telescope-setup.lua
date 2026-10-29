@@ -1,5 +1,3 @@
-local paths = require("nix-paths")
-
 -- Telescope runs fd/rg with --no-ignore so untracked and hidden files show up,
 -- but that also turns off .gitignore handling entirely. Anything we still never
 -- want in results has to be listed here. Single source of truth for the
@@ -146,7 +144,7 @@ require("telescope").setup {
       -- --hidden/--no-ignore match the find_files picker below, so grep sees
       -- the same set of files the file picker shows.
       vimgrep_arguments = vim.list_extend({
-        paths.ripgrep,
+        "rg",
         "--color=never",
         "--no-heading",
         "--with-filename",
@@ -163,7 +161,7 @@ require("telescope").setup {
         -- fd skips dotfiles and anything matched by .gitignore by default,
         -- which hid every dotfile. Show those, minus the junk list at the top.
         find_command = vim.list_extend({
-          paths.fd,
+          "fd",
           "--type", "f",
           "--hidden",
           "--no-ignore",
@@ -210,7 +208,7 @@ local live_multigrep = function(opts)
       end
 
       local pieces = vim.split(prompt, "  ")
-      local args = { paths.ripgrep }
+      local args = { "rg" }
       if pieces[1] then
         table.insert(args, "-e")
         table.insert(args, pieces[1])

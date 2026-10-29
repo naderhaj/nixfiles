@@ -1,5 +1,3 @@
-local paths = require("nix-paths")
-
 -- set formatting shortcut if lsp is not attached
 vim.api.nvim_set_keymap("n", "<leader>lf", '<cmd>lua require("conform").format({lsp_format = "fallback" })<CR>', {
     noremap = true,
@@ -35,18 +33,18 @@ require("conform").setup({
 
   formatters = {
     ruff = {
-      command = paths.ruff,
+      command = "ruff",
       args = { "format", "--stdin-filename", "$FILENAME" },
       stdin = true,
     },
     stylua = {
-      command = paths.stylua,
+      command = "stylua",
     },
     prettier = {
-      command = paths.prettier,
+      command = "prettier",
     },
     nixfmt = {
-      command = paths.nixfmt,
+      command = "nixfmt",
     },
   },
 })

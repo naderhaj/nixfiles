@@ -1,38 +1,37 @@
-{ pkgs, ... }:
+{ config, pkgs, ... }:
 {
-  # Generate nix-paths.lua — the only Nix-interpolated Lua file.
-  # All other Lua files require("nix-paths") to get package paths.
-  xdg.configFile."nvim/lua/nix-paths.lua".text = ''
-    return {
-      -- LSP servers
-      rust_analyzer = "${pkgs.rust-analyzer}/bin/rust-analyzer",
-      basedpyright = "${pkgs.basedpyright}/bin/basedpyright-langserver",
-      nil_ls = "${pkgs.nil}/bin/nil",
-      nixfmt = "${pkgs.nixfmt}/bin/nixfmt",
-      metals = "${pkgs.unstable.metals.override { jre = pkgs.jre; }}/bin/metals",
-      typescript_language_server = "${pkgs.typescript-language-server}/bin/typescript-language-server",
-      html_language_server = "${pkgs.vscode-langservers-extracted}/bin/vscode-html-language-server",
-      clangd = "${pkgs.llvmPackages_19.clang-tools}/bin/clangd",
-      gopls = "${pkgs.gopls}/bin/gopls",
-      jdtls = "${pkgs.jdt-language-server}/bin/jdtls",
-      yaml_language_server = "${pkgs.yaml-language-server}/bin/yaml-language-server",
-      helm_ls = "${pkgs.helm-ls}/bin/helm_ls",
-      terraform_ls = "${pkgs.terraform-ls}/bin/terraform-ls",
-
-      -- Formatters
-      ruff = "${pkgs.ruff}/bin/ruff",
-      stylua = "${pkgs.stylua}/bin/stylua",
-      prettier = "${pkgs.prettier}/bin/prettier",
-
-      -- Tools
-      ripgrep = "${pkgs.ripgrep}/bin/rg",
-      fd = "${pkgs.fd}/bin/fd",
-      glow = "${pkgs.glow}/bin/glow",
-    }
-  '';
+  # Linked to the checkout, not copied to the store: Lua edits apply on nvim
+  # restart without a rebuild. init.lua (the require list) still needs a switch.
+  xdg.configFile."nvim/lua".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/projects/nixfiles/modules/home/nvim/lua";
 
   programs.neovim = {
     enable = true;
+    # On nvim's PATH only (appended, so a project dev shell's version wins).
+    # Lua refers to these by bare command name.
+    extraPackages = with pkgs; [
+      # LSP servers
+      rust-analyzer
+      basedpyright
+      nil
+      typescript-language-server
+      vscode-langservers-extracted
+      llvmPackages_19.clang-tools
+      gopls
+      jdt-language-server
+      yaml-language-server
+      helm-ls
+      terraform-ls
+      # Formatters
+      nixfmt
+      ruff
+      stylua
+      prettier
+      # Tools
+      ripgrep
+      fd
+      glow
+    ];
     plugins = with pkgs.vimPlugins; [
       # theme
       onedark-nvim
@@ -134,37 +133,11 @@
       glow-nvim
     ];
 
-    initLua = builtins.concatStringsSep "\n" [
-      (builtins.readFile ./which-key.lua)
-      (builtins.readFile ./basic.lua)
-      (builtins.readFile ./completion.lua)
-      (builtins.readFile ./formatters-setup.lua)
-      (builtins.readFile ./lsp.lua)
-      (builtins.readFile ./filetree.lua)
-      (builtins.readFile ./themes/onedark.lua)
-      (builtins.readFile ./treesitter.lua)
-      (builtins.readFile ./telescope-setup.lua)
-      (builtins.readFile ./trouble.lua)
-      (builtins.readFile ./gitsigns.lua)
-      (builtins.readFile ./fugitive.lua)
-      (builtins.readFile ./octo.lua)
-      (builtins.readFile ./notify.lua)
-      (builtins.readFile ./autopairs.lua)
-      (builtins.readFile ./statusline.lua)
-      (builtins.readFile ./bufferline.lua)
-      (builtins.readFile ./visuals.lua)
-      (builtins.readFile ./json.lua)
-      (builtins.readFile ./flash.lua)
-      (builtins.readFile ./copilot.lua)
-      (builtins.readFile ./undotree.lua)
-      (builtins.readFile ./neoclip.lua)
-      (builtins.readFile ./surround.lua)
-      (builtins.readFile ./terminal.lua)
-      (builtins.readFile ./markdown.lua)
-      (builtins.readFile ./blink-highlight.lua)
-      (builtins.readFile ./glow-setup.lua)
-      (builtins.readFile ./dadbod.lua)
-    ];
+    initLua = ''
+      -- nvim-metals needs the metals built against our JRE, or it installs its own via coursier
+      vim.g.nix_metals_path = "${pkgs.unstable.metals.override { jre = pkgs.jre; }}/bin/metals"
+    ''
+    + builtins.readFile ./init.lua;
   };
 
 }
