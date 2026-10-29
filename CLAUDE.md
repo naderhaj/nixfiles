@@ -147,6 +147,23 @@ make update
 
 After any input update, run `make mbp-build` to verify the macOS config still evaluates.
 
+`home-manager` and `nix-darwin` track their release branches (`release-26.05`,
+`nix-darwin-26.05`), matching the `nixpkgs` pin; move all three together on a release bump.
+
+### CI and automated updates
+
+- `.github/workflows/build.yml` builds each host on a native runner (zeus on Linux, the
+  Macs on macOS), runs `make nvim-test`, and on PRs posts the `nvd` package diff of all
+  three hosts as one PR comment, edited in place on each push. Builds go through the `naderhaj` Cachix cache. The `zeus`, `mbp2023` and
+  `ondorse` checks are required on `main`.
+- `update-flake-lock.yml` opens a weekly `flake.lock: update` PR (branch `flake-update`)
+  and dispatches `build.yml` on it, since PRs pushed with `GITHUB_TOKEN` don't trigger
+  workflows. Review the package diff and merge by hand. The same workflow opens an issue
+  (once per release) when a newer `nixos-YY.MM` branch exists, since lock updates never
+  leave the branch named in `flake.nix`.
+- Renovate (`renovate.json`) only bumps the SHA-pinned GitHub Actions, waits 14 days after
+  a release, and automerges once the checks pass.
+
 ### Package Management
 
 ```bash

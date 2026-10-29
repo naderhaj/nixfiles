@@ -7,6 +7,9 @@
 
   programs.neovim = {
     enable = true;
+    # No plugin here uses the Ruby or Python remote-plugin hosts.
+    withRuby = false;
+    withPython3 = false;
     # On nvim's PATH only (appended, so a project dev shell's version wins).
     # Lua refers to these by bare command name.
     extraPackages = with pkgs; [
