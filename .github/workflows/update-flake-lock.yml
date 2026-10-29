@@ -1,0 +1,37 @@
+name: Update flake.lock
+
+on:
+  schedule:
+    - cron: "0 4 * * 1" # Mondays, 04:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  actions: write # to start the build on the PR branch
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@448cde739abec1eaf0646249e3d25bb8d9bc7702 # v31.11.2
+
+      - name: Update flake.lock
+        id: update
+        uses: DeterminateSystems/update-flake-lock@da03c0f078bc4b2c37ee4f7e072d34bf8f188bb3 # v29
+        with:
+          branch: flake-update
+          pr-title: "flake.lock: update"
+
+      # Pushes made with GITHUB_TOKEN don't trigger other workflows, so the PR
+      # wouldn't get its build checks. workflow_dispatch is the exception, and
+      # its checks land on the PR's head commit all the same.
+      - name: Build the PR
+        if: contains(fromJSON('["created", "updated"]'), steps.update.outputs.pull-request-operation)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run build.yml --ref flake-update

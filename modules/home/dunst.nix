@@ -4,6 +4,14 @@
   services.dunst = {
     enable = true;
 
+    # home-manager derives settings.global.icon_path from this (all icon
+    # categories, with hicolor as fallback).
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
+      size = "48x48";
+    };
+
     settings = {
       global = {
         # Display
@@ -54,7 +62,6 @@
         icon_position = "left";
         min_icon_size = 48;
         max_icon_size = 64;
-        icon_path = "/run/current-system/sw/share/icons/Papirus-Dark/48x48/status:/run/current-system/sw/share/icons/Papirus-Dark/48x48/devices:/run/current-system/sw/share/icons/Papirus-Dark/48x48/apps";
 
         # History
         sticky_history = true;

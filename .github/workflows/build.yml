@@ -64,17 +64,21 @@ jobs:
       - name: Neovim smoke test
         run: ./scripts/nvim-test.sh ${{ matrix.host }}
 
-      - name: Build PR base
+      # Base is the PR's base, or main for a dispatched run on a branch (the
+      # flake.lock update PR, see update-flake-lock.yml).
+      - name: Build base
         id: base
-        if: github.event_name == 'pull_request'
+        if: github.ref != 'refs/heads/main'
         # A broken base shouldn't fail the PR that might be fixing it.
         continue-on-error: true
         env:
-          BASE_SHA: ${{ github.event.pull_request.base.sha }}
-        run: nix build "git+file://$PWD?rev=$BASE_SHA#${{ matrix.attr }}" --out-link result-old
+          PR_BASE: ${{ github.event.pull_request.base.sha }}
+        run: |
+          base="${PR_BASE:-$(git merge-base origin/main HEAD)}"
+          nix build "git+file://$PWD?rev=$base#${{ matrix.attr }}" --out-link result-old
 
       - name: Package diff
-        if: github.event_name == 'pull_request' && steps.base.outcome == 'success'
+        if: steps.base.outcome == 'success'
         run: |
           {
             echo "### ${{ matrix.host }}"
