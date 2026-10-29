@@ -1,0 +1,81 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: ${{ matrix.host }}
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 180
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - host: zeus
+            runner: ubuntu-latest
+            attr: nixosConfigurations.zeus.config.system.build.toplevel
+          - host: mbp2023
+            runner: macos-latest
+            attr: darwinConfigurations.mbp2023.system
+          - host: ondorse
+            runner: macos-latest
+            attr: darwinConfigurations.ondorse.system
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history so the PR base commit can be built for the diff.
+          fetch-depth: 0
+
+      # The zeus closure unpacks to ~20 GiB, more than a stock Ubuntu runner
+      # has free. Must run before Nix is installed, since it mounts /nix.
+      - name: Free disk space
+        if: runner.os == 'Linux'
+        uses: wimpysworld/nothing-but-nix@687c797a730352432950c707ab493fcc951818d7 # v10
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@448cde739abec1eaf0646249e3d25bb8d9bc7702 # v31.11.2
+
+      # Optional: set the CACHIX_CACHE repo variable (and CACHIX_AUTH_TOKEN
+      # secret to push) to reuse builds across runs. Without it, everything
+      # not on cache.nixos.org is rebuilt each time.
+      - name: Set up Cachix
+        if: vars.CACHIX_CACHE != ''
+        uses: cachix/cachix-action@38b082610b782e7e93e209c35fd730d399dee866 # v17
+        with:
+          name: ${{ vars.CACHIX_CACHE }}
+          authToken: ${{ secrets.CACHIX_AUTH_TOKEN }}
+
+      - name: Build
+        run: nix build ".#${{ matrix.attr }}" --out-link result-new
+
+      - name: Build PR base
+        id: base
+        if: github.event_name == 'pull_request'
+        # A broken base shouldn't fail the PR that might be fixing it.
+        continue-on-error: true
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: nix build "git+file://$PWD?rev=$BASE_SHA#${{ matrix.attr }}" --out-link result-old
+
+      - name: Package diff
+        if: github.event_name == 'pull_request' && steps.base.outcome == 'success'
+        run: |
+          {
+            echo "### ${{ matrix.host }}"
+            echo '```'
+            nix run --inputs-from . nixpkgs#nvd -- --color never diff result-old result-new
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
