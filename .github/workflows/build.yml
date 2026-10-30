@@ -64,8 +64,7 @@ jobs:
       - name: Neovim smoke test
         run: ./scripts/nvim-test.sh ${{ matrix.host }}
 
-      # Base is the PR's base, or main for a dispatched run on a branch (the
-      # flake.lock update PR, see update-flake-lock.yml).
+      # Base is the PR's base, or main for a manually dispatched branch run.
       - name: Build base
         id: base
         if: github.ref != 'refs/heads/main'
@@ -127,7 +126,7 @@ jobs:
           shopt -s nullglob
           diffs=(diff-*.md)
           [ ${#diffs[@]} -gt 0 ] || exit 0
-          # Dispatched runs (the flake.lock PR) have no PR in the event.
+          # Dispatched runs have no PR in the event; look it up by branch.
           pr="${PR:-$(gh pr list --head "$BRANCH" --json number --jq '.[0].number // empty')}"
           [ -n "$pr" ] || exit 0
           {

@@ -157,8 +157,9 @@ After any input update, run `make mbp-build` to verify the macOS config still ev
   three hosts as one PR comment, edited in place on each push. Builds go through the `naderhaj` Cachix cache. The `zeus`, `mbp2023` and
   `ondorse` checks are required on `main`.
 - `update-flake-lock.yml` opens a weekly `flake.lock: update` PR (branch `flake-update`)
-  and dispatches `build.yml` on it, since PRs pushed with `GITHUB_TOKEN` don't trigger
-  workflows. Review the package diff and merge by hand. The same workflow opens an issue
+  using the `FLAKE_UPDATE_TOKEN` secret, a fine-grained PAT (Contents + Pull requests
+  write, this repo only, expires yearly). With `GITHUB_TOKEN` instead, the PR's build
+  waits for maintainer approval, and dispatched runs don't count as required checks. Review the package diff and merge by hand. The same workflow opens an issue
   (once per release) when a newer `nixos-YY.MM` branch exists, since lock updates never
   leave the branch named in `flake.nix`.
 - Renovate (`renovate.json`) only bumps the SHA-pinned GitHub Actions, waits 14 days after
