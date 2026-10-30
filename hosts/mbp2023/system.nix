@@ -10,6 +10,7 @@
     ../../modules/system/common-packages.nix
     ../../modules/system/nixpkgs-overlays.nix
     ../../modules/system/fonts.nix
+    ../../modules/system/binary-caches.nix
   ];
 
   # Allow unfree packages
