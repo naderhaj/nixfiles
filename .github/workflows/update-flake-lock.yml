@@ -6,9 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
-  pull-requests: write
-  actions: write # to start the build on the PR branch
+  contents: read
   issues: write # for the new-release reminder
 
 jobs:
@@ -25,17 +23,19 @@ jobs:
         id: update
         uses: DeterminateSystems/update-flake-lock@da03c0f078bc4b2c37ee4f7e072d34bf8f188bb3 # v29
         with:
+          # A PR opened with GITHUB_TOKEN doesn't get a normal PR build (it waits
+          # for approval). A fine-grained PAT (Contents + Pull requests: write
+          # on this repo only) makes it a PR by the owner, which builds at once.
+          token: ${{ secrets.FLAKE_UPDATE_TOKEN }}
           branch: flake-update
           pr-title: "flake.lock: update"
+          pr-body: |
+            Weekly `nix flake update`. CI posts each host's package diff below;
+            review it, merge, then switch.
 
-      # Pushes made with GITHUB_TOKEN don't trigger other workflows, so the PR
-      # wouldn't get its build checks. workflow_dispatch is the exception, and
-      # its checks land on the PR's head commit all the same.
-      - name: Build the PR
-        if: contains(fromJSON('["created", "updated"]'), steps.update.outputs.pull-request-operation)
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh workflow run build.yml --ref flake-update
+            ```
+            {{ env.GIT_COMMIT_MESSAGE }}
+            ```
 
       # flake.lock updates never leave the release branch named in flake.nix,
       # so moving to the next NixOS release is manual. Open an issue (once per
