@@ -45,6 +45,7 @@ modules/
 │   ├── common-packages.nix
 │   ├── common-linux-packages.nix
 │   ├── fonts.nix                  # shared font set (NixOS + Darwin)
+│   ├── binary-caches.nix          # extra substituters (naderhaj Cachix)
 │   ├── nixpkgs-overlays.nix       # provides pkgs.unstable.<name>
 │   └── desktop-environments/
 └── home/                          # Reusable home-manager modules (flat)
