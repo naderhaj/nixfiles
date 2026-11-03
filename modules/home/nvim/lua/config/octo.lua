@@ -1,7 +1,8 @@
 -- octo.nvim: GitHub PR review. Every key lives under <leader>o, and only
--- harmless actions are mapped. Merge, close, approve, request changes, delete,
--- discard and CI rerun/cancel have no key on purpose — do them in the browser
--- (<leader>ob) or with an explicit :Octo command.
+-- harmless actions are mapped. Approve and request changes live only in the
+-- submit window (<leader>oS). Merge, close, delete, discard and CI rerun/cancel
+-- have no key on purpose — do them in the browser (<leader>ob) or with an
+-- explicit :Octo command.
 
 -- shared mappings
 local nav = {
@@ -31,9 +32,8 @@ local web = {
 	open_in_browser = { lhs = "<leader>ob", desc = "open in browser" },
 	copy_url = { lhs = "<leader>oy", desc = "copy url" },
 }
--- unmapped: blank where octo skips blank keys (buffer mappings), an untypeable
--- <Plug> key where it would pass "" to vim.keymap.set (pickers, runs buffer)
-local off = { lhs = "" }
+-- unmapped: an untypeable <Plug> key, since octo indexes every key and would
+-- pass "" to vim.keymap.set in pickers and the runs buffer
 local function plug(name)
 	return { lhs = "<Plug>(octo-off-" .. name .. ")" }
 end
@@ -86,9 +86,8 @@ require("octo").setup({
 		submit_win = {
 			comment_review = { lhs = "<leader>oS", desc = "post review as comment" },
 			close_review_tab = { lhs = "<C-c>", desc = "close review tab" },
-			-- the submit window header reads these two, so they must exist
-			approve_review = off,
-			request_changes = off,
+			approve_review = { lhs = "<C-a>", desc = "approve review" },
+			request_changes = { lhs = "<C-r>", desc = "request changes" },
 		},
 		-- mappings_disable_default drops these tables, but octo indexes every
 		-- key unconditionally, so all of them must be defined
