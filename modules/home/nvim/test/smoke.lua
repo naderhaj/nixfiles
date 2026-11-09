@@ -103,6 +103,10 @@ local function run()
 	section("languages")
 	local dir = vim.fn.tempname()
 	vim.fn.mkdir(dir .. "/.git", "p")
+	-- Run from the sample project, not the checkout: prettier applies the cwd's
+	-- .gitignore (which has `tmp`) even to files outside it, so a TMPDIR under
+	-- e.g. /var/tmp would make it skip the samples.
+	vim.fn.chdir(dir)
 	local bufs = {}
 	for _, s in ipairs(samples) do
 		local path = dir .. "/" .. s.file
