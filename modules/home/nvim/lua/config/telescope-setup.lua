@@ -23,6 +23,7 @@ local junk = {
   ".ruff_cache",
   ".terraform",
   "vendor",
+  ".claude/worktrees", -- Claude Code worktrees: full repo copies, one per session
 }
 
 -- fd spells exclusions `--exclude <pat>`, ripgrep spells them `--glob !<pat>`.
