@@ -39,5 +39,8 @@ wk.add({ mode = "n", { "<leader>s", group = "substitute" } })
 -- t tree
 wk.add({ mode = "n", { "<leader>t", group = "tree" } })
 
+-- z spell
+wk.add({ mode = "n", { "<leader>z", group = "spell" } })
+
 -- o octo (GitHub PRs)
 wk.add({ mode = "n", { "<leader>o", group = "octo" } })

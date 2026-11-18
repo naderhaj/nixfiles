@@ -41,6 +41,13 @@ vim.api.nvim_create_autocmd({ "BufNewFile", "BufRead" }, {
 	command = "setlocal spell",
 })
 
+vim.keymap.set("n", "<leader>zl", function()
+	local lang = vim.bo.spelllang == "fr" and "en_us" or "fr"
+	vim.bo.spelllang = lang
+	vim.wo.spell = true
+	vim.notify("spelllang=" .. lang)
+end, { desc = "Toggle spell language (en/fr)" })
+
 vim.api.nvim_set_keymap("n", "<space>", "<nop>", {
 	noremap = true,
 	silent = true,
