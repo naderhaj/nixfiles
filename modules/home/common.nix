@@ -58,6 +58,9 @@ in
       settings.updates.auto_update = true; # download/refresh the example pages automatically
     };
     ssh.enable = true;
+
+    # Installs mise and wires up `mise activate zsh` via home-manager's zsh integration
+    mise.enable = true;
   };
 
   home.packages = [

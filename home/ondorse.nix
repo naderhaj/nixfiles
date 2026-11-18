@@ -23,9 +23,6 @@
 
   programs.htop.enable = true;
 
-  # Installs mise and wires up `mise activate zsh` via home-manager's zsh integration
-  programs.mise.enable = true;
-
   # Pin nix registry so `nix search` / `nix shell` use our locked nixpkgs
   # (also pinned system-wide via nix-darwin; kept here as belt-and-suspenders)
   nix.registry.nixpkgs.flake = inputs.nixpkgs;
