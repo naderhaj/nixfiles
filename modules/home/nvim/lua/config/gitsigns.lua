@@ -32,6 +32,7 @@ require("gitsigns").setup({
 
 		wk.add({
 			mode = "n",
+			buffer = bufnr,
 			{ "<leader>g", group = "gitsigns" },
 			---- blame gb
 			{ "<leader>gb", "<cmd>lua require'gitsigns'.blame_line{full=true}<cr>", desc = "blame (full)" },
@@ -47,24 +48,12 @@ require("gitsigns").setup({
 			{ "<leader>gs", "<cmd>lua require'gitsigns'.stage_buffer()<cr>", desc = "stage buffer" },
 			-- R
 			{ "<leader>gr", "<cmd>lua require'gitsigns'.reset_buffer_index()<cr>", desc = "reset buffer" },
-			-- diff base
-			{
-				"<leader>gB",
-				function()
-					vim.ui.input({ prompt = "Gitsigns base: " }, function(rev)
-						if rev and rev ~= "" then
-							gs.change_base(rev, true)
-						end
-					end)
-				end,
-				desc = "change diff base",
-			},
-			{ "<leader>gR", "<cmd>Gitsigns reset_base true<cr>", desc = "reset diff base" },
 		})
 
 		-- toggle
 		wk.add({
 			mode = "n",
+			buffer = bufnr,
 			{ "<leader>gt", group = "toggle" },
 			-- toggle current line blame
 			{
@@ -80,6 +69,7 @@ require("gitsigns").setup({
 
 		-- git hunks
 		wk.add({
+			buffer = bufnr,
 			{ "<leader>gh", group = "hunks" },
 			{ "<leader>ghn", nextHunk, desc = "next hunk", expr = true },
 			{ "<leader>ghp", prevHunk, desc = "prev hunk", expr = true },
