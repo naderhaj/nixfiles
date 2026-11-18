@@ -15,7 +15,7 @@ require("gitsigns").setup({
 				return "]c"
 			end
 			vim.schedule(function()
-				gs.next_hunk()
+				gs.nav_hunk("next")
 			end)
 			return "<Ignore>"
 		end
@@ -25,7 +25,7 @@ require("gitsigns").setup({
 				return "[c"
 			end
 			vim.schedule(function()
-				gs.prev_hunk()
+				gs.nav_hunk("prev")
 			end)
 			return "<Ignore>"
 		end
@@ -47,6 +47,19 @@ require("gitsigns").setup({
 			{ "<leader>gs", "<cmd>lua require'gitsigns'.stage_buffer()<cr>", desc = "stage buffer" },
 			-- R
 			{ "<leader>gr", "<cmd>lua require'gitsigns'.reset_buffer_index()<cr>", desc = "reset buffer" },
+			-- diff base
+			{
+				"<leader>gB",
+				function()
+					vim.ui.input({ prompt = "Gitsigns base: " }, function(rev)
+						if rev and rev ~= "" then
+							gs.change_base(rev, true)
+						end
+					end)
+				end,
+				desc = "change diff base",
+			},
+			{ "<leader>gR", "<cmd>Gitsigns reset_base true<cr>", desc = "reset diff base" },
 		})
 
 		-- toggle
@@ -60,19 +73,24 @@ require("gitsigns").setup({
 				desc = "toggle current line blame",
 			},
 			-- toggle deleted
-			{ "<leader>gtd", "<cmd>Gitsigns toggle_deleted<cr>", desc = "toggle deleted" },
+			{ "<leader>gtd", "<cmd>Gitsigns preview_hunk_inline<cr>", desc = "show deleted (inline hunk)" },
+			{ "<leader>gtl", "<cmd>Gitsigns toggle_linehl<cr>", desc = "toggle line highlight" },
+			{ "<leader>gtw", "<cmd>Gitsigns toggle_word_diff<cr>", desc = "toggle word diff" },
 		})
 
 		-- git hunks
 		wk.add({
 			{ "<leader>gh", group = "hunks" },
-			{ "<leader>ghn", nextHunk, desc = "next hunk" },
-			{ "<leader>ghp", prevHunk, desc = "prev hunk" },
+			{ "<leader>ghn", nextHunk, desc = "next hunk", expr = true },
+			{ "<leader>ghp", prevHunk, desc = "prev hunk", expr = true },
 			{ "<leader>ghr", "<cmd>Gitsigns reset_hunk<cr>", desc = "reset hunk" },
 
 			{ "<leader>ghs", "<cmd>Gitsigns stage_hunk<cr>", desc = "stage hunk" },
 			-- undo stage hunk
-			{ "<leader>ghu", "<cmd>Gitsigns undo_stage_hunk<cr>", desc = "undo stage hunk" },
+			{ "<leader>ghu", "<cmd>Gitsigns stage_hunk<cr>", desc = "unstage hunk (toggle)" },
+			{ "<leader>ghv", "<cmd>Gitsigns preview_hunk<cr>", desc = "preview hunk" },
+			{ "<leader>ghl", "<cmd>Gitsigns setloclist<cr>", desc = "list file hunks (loclist)" },
+			{ "<leader>ghq", "<cmd>Gitsigns setqflist all<cr>", desc = "list repo hunks (quickfix)" },
 		})
 
 		-- Text object
