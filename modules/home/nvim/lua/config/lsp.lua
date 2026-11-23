@@ -89,24 +89,37 @@ vim.g.rustaceanvim = {
 require("crates").setup({ lsp = { enabled = true, completion = true, actions = true, hover = true } })
 
 -- Python config
-vim.lsp.config["basedpyright"] = {
+--
+-- ty finds the project's .venv (or $VIRTUAL_ENV) on its own, but only relative
+-- to its root, so the root must be the Python project rather than the
+-- enclosing repository. Get that wrong and third-party imports go unresolved
+-- in a monorepo whose Python project (and venv) lives in a subdirectory.
+--
+-- ty is pre-1.0 and its diagnostics shift between releases, so a project that
+-- pins ty in its venv gets that version; otherwise the global (nixpkgs-unstable)
+-- one. An activated venv already wins via PATH; this also covers an inactive one.
+vim.lsp.config["ty"] = {
 	capabilities = capabilities,
 	on_attach = attach_keymaps,
-	cmd = { "basedpyright-langserver", "--stdio" },
+	cmd = function(dispatchers, config)
+		local exe = "ty"
+		local local_ty = config.root_dir and (config.root_dir .. "/.venv/bin/ty")
+		if local_ty and vim.fn.executable(local_ty) == 1 then
+			exe = local_ty
+		end
+		return vim.lsp.rpc.start({ exe, "server" }, dispatchers, {
+			cwd = config.cmd_cwd,
+			env = config.cmd_env,
+			detached = config.detached,
+		})
+	end,
 	filetypes = { "python" },
-	-- root_markers = { "pyrightconfig.json", "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" },
-	-- settings = {
-	-- 	python = {
-	-- 		analysis = {
-	-- 			autoSearchPaths = true,
-	-- 			useLibraryCodeForTypes = true,
-	-- 			diagnosticMode = "workspace",
-	-- 			typeCheckingMode = "off",
-	-- 		},
-	-- 	},
-	-- },
+	-- Ordered by decreasing priority. pyproject.toml must come before .git so the
+	-- root is the Python project (e.g. a monorepo's backend/, which holds the venv)
+	-- rather than the enclosing repository.
+	root_markers = { "ty.toml", "pyproject.toml", "setup.py", "setup.cfg", "requirements.txt", ".git" },
 }
-vim.lsp.enable("basedpyright")
+vim.lsp.enable("ty")
 
 -- Ruff as a language server: inline lint diagnostics + quick fixes
 -- (fix all, organize imports). Formatting stays with conform.
@@ -114,7 +127,7 @@ vim.lsp.config["ruff"] = {
 	capabilities = capabilities,
 	on_attach = function(client, bufnr)
 		attach_keymaps(client, bufnr)
-		-- leave hover to basedpyright, which has the type information
+		-- leave hover to ty, which has the type information
 		client.server_capabilities.hoverProvider = false
 	end,
 	cmd = { "ruff", "server" },

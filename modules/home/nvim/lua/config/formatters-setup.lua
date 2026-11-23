@@ -1,8 +1,47 @@
+local util = require("conform.util")
+
 -- set formatting shortcut if lsp is not attached
 vim.api.nvim_set_keymap("n", "<leader>lf", '<cmd>lua require("conform").format({lsp_format = "fallback" })<CR>', {
     noremap = true,
     silent = true,
 })
+
+-- Project-config markers used to pick the right formatter per repo.
+local OXC = { ".oxfmtrc.json", ".oxfmtrc.jsonc", "oxfmt.config.ts" }
+local RUFF = { "ruff.toml", ".ruff.toml", "pyproject.toml" }
+
+---Nearest config file walking up from the buffer's directory, or nil.
+---@param bufnr integer
+---@param names string[]
+---@return string|nil
+local function upward(bufnr, names)
+  local name = vim.api.nvim_buf_get_name(bufnr)
+  if name == "" then
+    return nil
+  end
+  return vim.fs.find(names, { upward = true, path = vim.fs.dirname(name) })[1]
+end
+
+-- Oxc repos are formatted with oxfmt; everything else keeps prettier.
+local function js_fmt(bufnr)
+  return upward(bufnr, OXC) and { "oxfmt" } or { "prettier" }
+end
+
+-- An Oxc repo's .oxfmtrc.json ignores *.md/*.yml/*.yaml/*.html, and oxfmt has no
+-- CSS support, so those files have no team standard there. Returning {} leaves
+-- them untouched instead of imposing prettier's defaults on them.
+local function prettier_unless_oxc(bufnr)
+  return upward(bufnr, OXC) and {} or { "prettier" }
+end
+
+-- Sort imports before formatting when the project has a ruff config, matching
+-- what `ruff check --fix` does in pre-commit (e.g. isort force-single-line).
+local function py_fmt(bufnr)
+  if upward(bufnr, RUFF) then
+    return { "ruff_organize_imports", "ruff_format" }
+  end
+  return { "ruff_format" }
+end
 
 require("conform").setup({
 
@@ -15,37 +54,43 @@ require("conform").setup({
     end,
 
   formatters_by_ft = {
-    python = { "ruff" },
+    python = py_fmt,
     lua = { "stylua" },
-    html = { "prettier" },
-    css = { "prettier" },
-    markdown = { "prettier" },
-    typescript = { "prettier" },
-    javascript = { "prettier" },
     nix = { "nixfmt" },
+    html = prettier_unless_oxc,
+    css = prettier_unless_oxc,
+    markdown = prettier_unless_oxc,
+    typescript = js_fmt,
+    javascript = js_fmt,
+    typescriptreact = js_fmt,
+    javascriptreact = js_fmt,
     -- For filetypes without an explicit formatter, fall back to LSP
     go = { lsp_format = "prefer" },
-    typescriptreact = { "prettier" },
-    javascriptreact = { "prettier" },
   },
 
   notify_on_error = true,
 
   formatters = {
-    ruff = {
+    -- Builtin ruff formatters. They inherit --force-exclude (honours
+    -- extend-exclude), range_args, and cwd = root of pyproject.toml/ruff.toml.
+    ruff_format = {
       command = "ruff",
-      args = { "format", "--stdin-filename", "$FILENAME" },
-      stdin = true,
+    },
+    ruff_organize_imports = {
+      command = "ruff",
     },
     stylua = {
       command = "stylua",
     },
+    -- Prefer the project's pinned prettier, fall back to the one on PATH.
     prettier = {
-      command = "prettier",
+      command = util.find_executable({ "node_modules/.bin/prettier" }, "prettier"),
     },
     nixfmt = {
       command = "nixfmt",
     },
+    -- oxfmt: builtin used as-is. Its command is util.from_node_modules("oxfmt"),
+    -- so the version always matches what the repo's CI and pre-commit run.
   },
 })
 

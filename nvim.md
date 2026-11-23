@@ -49,14 +49,29 @@
 
 ### Formatters
 
-Auto-formats on save. Supported languages:
+Auto-formats on save. The JS/TS formatter is chosen per project, so each repo
+gets the formatter its own CI and pre-commit enforce:
 
 | Language | Formatter |
 |----------|-----------|
-| Python | ruff |
+| Python | ruff (organize imports, then format) |
 | Lua | stylua |
 | Nix | nixpkgs-fmt |
-| HTML / CSS / Markdown / TS / JS | prettier |
+| TS / TSX / JS / JSX | oxfmt in Oxc repos, otherwise prettier |
+| HTML / CSS / Markdown | prettier, except in Oxc repos where they are left alone |
+
+A repo counts as an Oxc repo when an `.oxfmtrc.json` (or `.oxfmtrc.jsonc` /
+`oxfmt.config.ts`) is found walking up from the file. oxfmt is resolved from the project's own
+`node_modules/.bin`, never from nix, so the version always matches the team's.
+In those repos Markdown, YAML, HTML and CSS have no team standard (oxfmt's
+`ignorePatterns` skips them and it has no CSS support), so nothing formats them.
+
+Prettier also prefers a project-local `node_modules/.bin/prettier` when one
+exists, falling back to the nix binary.
+
+Python picks up the project's own ruff config (line length, isort style) via
+`--stdin-filename`; imports are sorted first so pre-commit has nothing left to
+rewrite.
 
 Commands:
 - `:FormatDisable` — disable autoformat globally

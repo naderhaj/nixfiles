@@ -15,7 +15,7 @@
     extraPackages = with pkgs; [
       # LSP servers
       rust-analyzer
-      basedpyright
+      unstable.ty # pre-1.0; stable lags far behind
       nil
       typescript-language-server
       vscode-langservers-extracted

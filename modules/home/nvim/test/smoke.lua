@@ -32,7 +32,7 @@ end
 -- Sample project: one file per language, unformatted so the formatters have
 -- something to do. `.git` makes it the root for every server's root_markers.
 local samples = {
-	{ file = "x.py", ft = "python", lsp = { "basedpyright", "ruff" }, text = "x=1\n" },
+	{ file = "x.py", ft = "python", lsp = { "ty", "ruff" }, text = "x=1\n" },
 	{ file = "x.nix", ft = "nix", lsp = { "nil_ls" }, text = "{a=1;}\n" },
 	{ file = "x.lua", ft = "lua", lsp = { "lua_ls" }, text = "local x=1\nreturn x\n" },
 	{ file = "x.ts", ft = "typescript", lsp = { "ts_ls" }, text = "const a=1\n" },
@@ -84,6 +84,8 @@ local function run()
 	for _, exe in ipairs(exes) do
 		check(exe, vim.fn.executable(exe) == 1, "not on PATH")
 	end
+	-- ty's cmd is a function (project-local binary first), so the loop above skips it.
+	check("ty", vim.fn.executable("ty") == 1, "not on PATH")
 	for _, name in ipairs({ "ruff", "stylua", "prettier", "nixfmt" }) do
 		local info = require("conform").get_formatter_info(name)
 		check("formatter " .. name, info.available, info.available_msg)
