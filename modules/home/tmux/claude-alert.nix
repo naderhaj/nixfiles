@@ -29,10 +29,11 @@ let
   # Written into ~/.claude/settings.json as its whole `hooks` key.
   claudeHooks = pkgs.writeText "claude-hooks.json" (
     builtins.toJSON {
-      # permission prompt, Claude idle on your reply for 60s, MCP elicitation form
+      # permission prompt, MCP elicitation form. Not idle_prompt: it fires 60s after every
+      # finished turn, so every idle session would go red.
       Notification = [
         {
-          matcher = "permission_prompt|idle_prompt|elicitation_dialog";
+          matcher = "permission_prompt|elicitation_dialog";
           hooks = hook "waiting";
         }
       ];

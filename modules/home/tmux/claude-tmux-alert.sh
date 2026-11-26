@@ -24,6 +24,10 @@ recount() {
   else
     tmux set -gu @claude_waiting_count
   fi
+  # Redraw status lines now instead of on the next status-interval tick.
+  tmux list-clients -F '#{client_name}' | while read -r c; do
+    tmux refresh-client -S -t "$c"
+  done
 }
 
 case "${1:-}" in
