@@ -3,6 +3,8 @@ let
   tmuxConf = lib.readFile ./default.conf;
 in
 {
+  imports = [ ./claude-alert.nix ];
+
   programs.tmux = {
     enable = true;
     aggressiveResize = true;

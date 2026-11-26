@@ -1,10 +1,14 @@
-{ ... }:
+{ lib, pkgs, ... }:
 {
   home.sessionVariables = {
     DISPLAY = ":0";
     EDITOR = "nvim";
-    BROWSER = "firefox";
     TERMINAL = "ghostty";
+  }
+  # On macOS Firefox is a manually installed .app with no `firefox` on PATH;
+  # leaving BROWSER unset makes gh & co. fall back to `open` (default browser).
+  // lib.optionalAttrs pkgs.stdenv.isLinux {
+    BROWSER = "firefox";
   };
 
   home.shellAliases = {
